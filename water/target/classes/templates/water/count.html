@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>送水公司后台管理系统</title>
+    <!--引用依赖-->
+    <div th:replace="component::link"></div>
+</head>
+<body>
+<div id="viewport">
+    <!--侧边栏-->
+    <div th:replace="component::sidebar"></div>
+    <!-- Content -->
+    <div id="content">
+        <div class="row">
+            <div th:replace="component::user"></div>
+        </div>
+        <div class="container-fluid">
+<!--            <div id="main" style="width: 50%;height:600px;float: left;text-align: center">-->
+<!--                <div style="font-size: 2em;margin-top: 250px">-->
+<!--                    玉汝于成送水公司后台管理系统-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+            <div id="count" style="width: 100%;height:600px;float: left;text-align: center"></div>
+            <script th:inline="javascript">
+                var chartDom = document.getElementById('count');
+                var myChart = echarts.init(chartDom);
+                var optionCount;
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "/util/getCount",
+                        type: "get",
+                        dataType: 'json',
+                        success: function (count) {
+                            toastr.success('数据获取成功');
+                            console.log(count)
+                            var countDate=[]
+                            var countNumber=[]
+
+                            for(var index in count){
+                                let sendWaterTime = new Date(index);
+                                countDate.push([
+                                    sendWaterTime.getFullYear(),
+                                    sendWaterTime.getMonth()+1,
+                                    sendWaterTime.getDate()
+                                ].join('/'))
+                                countNumber.push(count[index])
+                                console.log(countDate)
+                                console.log(countNumber)
+                            }
+                            optionCount = {
+                                tooltip: {
+                                    trigger: 'axis',
+                                    position: function (pt) {
+                                        return [pt[0], '50%'];
+                                    }
+                                },
+                                title: {
+                                    left: 'center',
+                                    text: '每日送水数据统计图',
+                                },
+                                toolbox: {
+                                    feature: {
+                                        dataZoom: {
+                                            yAxisIndex: 'none'
+                                        },
+                                        restore: {},
+                                        saveAsImage: {}
+                                    }
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: countDate
+                                },
+                                yAxis: {
+                                    type: 'value',
+                                    boundaryGap: [0, '100%']
+                                },
+                                dataZoom: [{
+                                    type: 'inside',
+                                    start: 0,
+                                    end: 50
+                                }, {
+                                    start: 0,
+                                    end: 10
+                                }],
+                                series: [
+                                    {
+                                        name: '送水数量',
+                                        type: 'line',
+                                        symbol: 'none',
+                                        sampling: 'lttb',
+                                        itemStyle: {
+                                            color: 'rgb(255, 70, 131)'
+                                        },
+                                        areaStyle: {
+                                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                offset: 0,
+                                                color: 'rgb(255, 158, 68)'
+                                            }, {
+                                                offset: 1,
+                                                color: 'rgb(255, 70, 131)'
+                                            }])
+                                        },
+                                        data: countNumber
+                                    }
+                                ]
+                            };
+                            optionCount && myChart.setOption(optionCount);
+                        },
+                        error: function (e) {
+                            toastr.warning('数据获取失败');
+                            console.log("faild")
+                        }
+                    })
+                })
+            </script>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

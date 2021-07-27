@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>送水公司后台管理系统</title>
+
+    <div th:replace="component::link"></div>
+</head>
+<body>
+<script th:inline="javascript">
+    function update(cust) {
+        console.log(cust)
+        document.getElementById("cid").value = cust.cid;
+        document.getElementById("custName").value = cust.custName;
+        document.getElementById("custMobile").value = cust.custMobile;
+        document.getElementById("custAddress").value = cust.custAddress;
+        document.getElementById("custTicket").value = cust.custTicket;
+        document.url.action = "/customer/updateCustomer";
+    }
+    function insert() {
+        document.url.action = "/customer/insertCustomer"
+    }
+</script>
+<div id="viewport">
+    <!-- Sidebar -->
+    <div th:include="component::sidebar">
+    </div>
+    <!-- Content -->
+    <div id="content">
+        <div th:include="component::searchBar('/customer/searchCustomer',${searchName})"></div>
+        <div th:replace="component::user"></div>
+
+        <div class="text-left">
+                <button onclick="insert()" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                    添加客户
+                </button>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td>客户编号</td>
+                            <td>客户名称</td>
+                            <td>客户地址</td>
+                            <td>联系方式</td>
+                            <td>水票数量</td>
+                            <td>操作</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 渲染后客户列表-->
+                        <tr th:each="cust:${customerList}">
+                            <td th:text="${cust.cid}"></td>
+                            <td th:text="${cust.custName}"></td>
+                            <td th:text="${cust.custAddress}"></td>
+                            <td th:text="${cust.custMobile}"></td>
+                            <td th:text="${cust.custTicket}"></td>
+                            <td>
+                                <div th:onclick="update([[${cust}]])" class="col-lg-3">
+                                    <button class="btn btn-primary btn-sm glyphicon glyphicon-pencil"
+                                            data-toggle="modal"
+                                            data-target="#myModal">
+                                    </button>
+                                </div>
+                                <a th:href="@{'/customer/deleteCustomer/'+${cust.cid}}" class="col-lg-3">
+                                    <button class="btn btn-danger btn-sm glyphicon glyphicon-remove">
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框（添加） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div>
+        <form th:action="@{/customer/insertCustomer}" method="post" name="url">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel2">
+                            信息录入框
+                        </h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center">
+                        <div class="input-group col-lg-12" style="margin-top: 10px">
+                            <input type="text" class="form-control hidden" name="cid" id="cid">
+                            <span class="col-lg-4">客户名称</span>
+                            <span class="col-lg-6">
+                                <input type="text" class="form-control" name="custName" id="custName">
+                            </span>
+                            <span class="col-lg-4">电话</span>
+                            <span class="col-lg-6">
+                            <input type="text" class="form-control" name="custMobile" id="custMobile">
+                            </span>
+                            <span class="col-lg-4">地址</span>
+                            <span class="col-lg-6">
+                                <input type="text" class="form-control" name="custAddress" id="custAddress">
+                            </span>
+                            <span class="col-lg-4">水票数量</span>
+                            <span class="col-lg-6">
+                            <select class="form-control" name="custTicket" id="custTicket">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                        </span>
+                        </div>
+                    </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        提交
+                    </button>
+                </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
+    </div>
+</div>
+</body>
+</html>

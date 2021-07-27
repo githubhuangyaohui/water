@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>送水公司后台管理系统</title>
+    <div th:replace="component::link"></div>
+
+</head>
+<body>
+<div id="viewport">
+
+    <div th:replace="component::sidebar"></div>
+
+    <!-- Content -->
+    <div id="content">
+        <div class="row">
+            <div th:replace="component::user"></div>
+
+        </div>
+        <div class="container-fluid">
+
+            <div id="main" style="width: 100%;height:600px;text-align: center">
+                <div style="font-size: 2em;margin-top: 250px">
+                    玉汝于成送水公司后台管理系统
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

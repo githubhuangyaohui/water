@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>送水公司后台管理系统</title>
+    <div th:replace="component::link"></div>
+
+</head>
+<body>
+<div id="viewport">
+
+    <div th:replace="component::sidebar"></div>
+
+    <!-- Content -->
+    <div id="content">
+        <div class="row">
+            <div th:replace="component::user"></div>
+
+        </div>
+        <div class="container-fluid">
+
+            <!--            <div id="main" style="width: 50%;height:600px;float: left;text-align: center">-->
+            <!--                <div style="font-size: 2em;margin-top: 250px">-->
+            <!--                    玉汝于成送水公司后台管理系统-->
+            <!--                </div>-->
+            <!--            </div>-->
+
+            <!--工资列表-->
+            <div id="workerTable" style="width: 50%;height:600px;float: left">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td>员工编号</td>
+                        <td>员工名称</td>
+                        <td>底薪</td>
+                        <td>提成</td>
+                        <td>合计</td>
+                    </tr>
+                    </thead>
+                    <tbody id="salaryTableBody">
+                    <!-- 渲染后客户列表-->
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!--饼状图-->
+            <div id="worker"
+                 style="width: 50%;height:600px;float: right">
+            </div>
+            <script th:inline="javascript">
+                var chartDom = document.getElementById('worker');
+                var myChart = echarts.init(chartDom);
+                var option;
+                option = {
+                    title: {
+                        text: '送水员工工资分配',
+                        subtext: '纯属虚构',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    legend: {
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                    },
+                    series: [
+                        {
+                            name: '姓名',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['40%', '50%'],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                option && myChart.setOption(option);
+
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "/util/getSalary",
+                        type: "get",
+                        dataType: 'json',
+                        success: function (data) {
+                            toastr.success('数据获取成功');
+                            console.log(data)
+                            //渲染表格
+                            var str = '';
+                            //对数据做遍历，拼接到页面显示
+                            for (var index in data) {
+                                str += '<tr>'
+                                    + '<td>' + data[index].wid + '</td>'
+                                    + '<td>' + data[index].workerName + '</td>'
+                                    + '<td>' + data[index].workerSalary + '</td>'
+                                    + '<td>' + data[index].workerMoney + '</td>'
+                                    + '<td>' + Math.round(data[index].workerSalary * data[index].workerMoney) + '</td>'
+                                    + '</tr>'
+                            }
+                            //放入页面的容器显示
+                            $('#salaryTableBody').html(str);
+
+                            var workerSalaryList = data
+                            var legendData = [];
+                            var seriesData = [];
+                            for (var index in workerSalaryList) {
+                                legendData.push(workerSalaryList[index].workerName);
+                                seriesData.push({
+                                    name: workerSalaryList[index].workerName,
+                                    value: Math.round(workerSalaryList[index].workerSalary * workerSalaryList[index].workerMoney)
+                                });
+                            }
+                            //设置值
+                            myChart.setOption({
+                                legend: {
+                                    data: legendData
+                                },
+                                series: [{
+                                    data: seriesData
+                                }]
+                            })
+                        },
+                        error: function (e) {
+                            toastr.warning('数据获取失败');
+                            console.log("faild")
+                        }
+                    })
+                })
+            </script>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

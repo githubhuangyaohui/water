@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whut.water.mapper.WorkerMapper">
+    <select id="listWorker" resultType="com.whut.water.entities.Worker">
+        select wid,worker_name,worker_salary,worker_money,worker_image from worker
+    </select>
+
+    <select id="searchWorker" resultType="com.whut.water.entities.Worker">
+        select wid,worker_name,worker_salary,worker_money,worker_image from worker
+        where 1 = 1
+        <if test="workerName != null and workerName != ''">
+            and worker_name like concat('%',#{workerName},'%')
+        </if>
+    </select>
+
+    <insert id="insertWorker">
+        INSERT INTO worker(worker_name,worker_salary,worker_money,worker_image)
+        VALUES(#{worker.workerName},#{worker.workerSalary},#{worker.workerMoney},#{worker.workerImage})
+    </insert>
+
+    <delete id="deleteWorker">
+        DELETE FROM worker WHERE wid=#{wid}
+    </delete>
+
+    <update id="updateWorker">
+        UPDATE	worker
+        SET worker_name=#{worker.workerName},
+        worker_salary=#{worker.workerSalary},
+        worker_money=#{worker.workerMoney},
+        worker_image=#{worker.workerImage}
+        WHERE wid=#{worker.wid};
+    </update>
+
+    <update id="adjustSalary">
+        UPDATE	worker
+        SET worker_salary=#{workerSalary}
+        WHERE wid=#{wid};
+    </update>
+</mapper>

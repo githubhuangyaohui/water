@@ -1,0 +1,50 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: water-8080
+  # 数据源配置信息
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/water?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    druid:
+      max-active: 10
+      min-idle: 5
+      max-wait: 3000
+  mvc:
+    format:
+      date: yyyy-MM-dd
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/water/
+    suffix: .html
+  resources:
+    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resource,file:${location}
+
+  # Springboot将从classpath中按如下优先级加载对应前端静态资源
+  # classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resource
+  # 除此之外还要加载E:/upLoad/picture/路径下的静态资源
+  servlet:
+    multipart:
+      max-file-size: 2000000000000000
+
+# 上传到服务器的路径
+location: C:/Users/HUANGYAOHUI/Desktop/springboot/upLoad/picture/
+
+
+# 配置MyBatis持久层框架
+mybatis:
+  # 执行实体类名称别名所在的包
+  type-aliases-package: com.whut.water.entities
+  configuration:
+    # 开启驼峰命名，让数据库表的字段和Java实体类的属性完成映射
+    map-underscore-to-camel-case: true
+    # 配置日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 配置映射文件的位置
+  mapper-locations: classpath:/mappers/*Mapper.xml

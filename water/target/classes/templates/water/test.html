@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <div th:replace="component::link"></div>
+    <script th:inline="javascript">
+        // $()表示一个jQuery对象
+        /**
+         * 所有的jQuery代码必须在jQuery对象中定义
+         * 此时的匿名函数相当于JS的window.onload事件
+         * 匿名函数是一个Hook(钩子)，注册到jQuery对象中
+         * 使用jQuery好处：
+         *  1jQuery比JS代码简洁
+         *  2jQuery对象在当前窗体中不会被覆盖，可以指定多次
+         */
+        // $(function(){
+        //     alert("Hello jQuery 1");
+        // })
+        // $(function(){
+        //     alert("Hello jQuery 2");
+        // })
+        // $(function(){
+        //     alert("Hello jQuery 3");
+        // })
+        // $(function(){
+        //     // 选择所有HTML元素，为其设置样式
+        //     $("*").css("color","red");
+        // })
+        $(function(){
+            $("p").css("background-color","pink");
+        })
+
+        $(function(){
+            $(".word").css("color","blue");
+        })
+
+        $(function(){
+            // jQuery选择器里面的文本字符串跟java一样区分大小写，#first和#First是两个不同的选择器
+            // jQuery选择器性能问题？
+            // 磁盘的HTML文件加载到浏览器的DOM树，会为每个HTML元素的id属性创建一个索引
+            // 使用ID选择器选择元素，会根据索引去查找元素，所以效率高
+            $("#first").css("background-color","orange");
+
+        })
+
+        $(function(){
+            // 选择h3 #first #second元素
+            // 注意：标签选择器不区分大小写 "H3" 和 "h3"是一个选择器
+            $("h3,#first1,#second").css("border","3px dashed blue");
+        })
+
+        $(function(){
+            // 选择form下面所有的input子元素
+            $("form>input").css("border-radius","10px");
+        })
+
+        $(function(){
+            $("form input").css("border","3px double red");
+        })
+        $(function(){
+            // 选择form后面的一个元素，不会选择多个
+            $("form+input").css("background-color","pink");
+        })
+
+        $(function(){
+            // 选form后面所有的input元素
+            $("form~input").css("border","3px solid red");
+        })
+
+        /**
+         元素属性选择器所有的属性必须在[]里面定义，也就是说[]是元素属性选择器的核心
+         [type] 选择所有包含type属性的HTML元素
+         [type="text"] 选择所有type属性等于text的HTML元素
+         ^ 匹配文本的开头
+         $ 匹配文本的结束
+         * 匹配所有包含的字符
+         */
+        $(function(){
+            $("input[type]").css("background-color","pink");
+        })
+        $(function(){
+            $("input[name=txtUserName]").css("background-color","orange");
+        })
+        $(function(){
+            // $元素属性以XXX结束
+            $("input[name $=Pwd]").css("background-color","green");
+        })
+        $(function(){
+            // ^ 元素属性选择器以XXX开头
+            $("input[name ^=txt]").css("background-color","black");
+
+        })
+        $(function(){
+            // *表示选中name属性包含m的输入框
+            $("input[name *= m]").css("background-color","yellow");
+
+        })
+    </script>
+</head>
+<body>
+<div>
+
+    <h1>岳阳楼记</h1>
+    <h2>岳阳楼记</h2>
+    <h3>岳阳楼记</h3>
+    <h4>岳阳楼记</h4>
+    <h5>岳阳楼记</h5>
+    <h6>岳阳楼记</h6>
+    <p>庆历四年间</p>
+
+
+    <P>莫愁前路无知己</P>
+    <P>天下谁人不识君</P>
+    <u>东边日出西边雨，道是无晴却有晴</u>
+
+    <p class="word">三十八年已过去，弹指一挥间</p>
+    <p class="word">可上九天揽月，可下五洋捉鳖</p>
+    <p>世上无难事，只有肯登攀</p>
+
+
+    <P id="first">天若有情天亦老.</P>
+    <p>人间正道是沧桑</p>
+
+
+    <H3>白雪歌.送武判官归京</H3>
+    <p id="first1">北风卷地白草折</p>
+    <p id="second">胡天八月即飞雪</p>
+    <p>轮台东门送君去，去时雪满天山路，山回路转不见君，雪上空留马行处</p>
+
+    <form action="index.html" method="get">
+        <input type="text" /><br />
+        <!--选择了，因为name=txtUserName-->
+        <input type="text" name="txtUserName"/><br />
+        <div>
+            <input /><br />
+            <input type="text" name="txtPwd" placeholder="密码"/><br />
+            <div>
+                <input type="text" name="txtConfirmPwd" placeholder="密码确认"/><br />
+            </div>
+        </div>
+        <input type="text" /><br />
+        <textarea cols="30" rows="10" ></textarea>
+    </form>
+    <input class="myInput" type="text" />
+    <input class="myInput" type="text" />
+</div>
+</body>
+</html>

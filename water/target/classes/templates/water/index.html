@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <link th:href="@{/css/style2.css}" rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<!-----start-main---->
+
+<div class="main">
+    <div class="login-form">
+
+        <h1>用户登录</h1>
+        <div class="head">
+            <img src="../../images/user.png" alt=""/>
+        </div>
+        <!--thymeleaf模板引擎url路径必须包含在@{}中-->
+        <form th:action="@{/login}" th:method="post">
+            <input type="text" class="text" name="userName" required placeholder="请输入用户名">
+            <input type="password" name="userPwd" required placeholder="请输入密码">
+            <div class="submit">
+                <input type="submit" name="submit" value="登录">
+            </div>
+            <p style="color: red" th:text="${loginFail}" th:if="${!#strings.isEmpty(loginFail)}"></p>
+        </form>
+        <!--		</div>-->
+        <!--		 	<div class="copy-right">-->
+        <!--				<p>Copyright &copy; 2014.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>-->
+        <!--			</div>-->
+        <!--		</div>-->
+
+        <div style="display:none">
+            <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript'
+                    charset='gb2312'></script>
+        </div>
+    </div>
+</div>
+</body>
+</html>

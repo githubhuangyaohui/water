@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>送水公司后台管理系统</title>
+
+    <!--复用公共链接组件-->
+    <div th:fragment="link">
+        <!--Bootstrap固定框架-->
+        <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+        <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+        <!--图标库-->
+        <link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
+        <!--核心样式-->
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <!--js库-->
+        <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+        <script type="text/javascript" th:src="@{/js/jquery.form.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+        <!--消息提示框插件:toastr-->
+        <link rel="stylesheet" th:href="@{/js/toastr.min.css}">
+        <script th:src="@{/js/toastr.min.js}"></script>
+        <!--图标插件-->
+        <script th:src="@{/js/echarts.min.js}"></script>
+    </div>
+
+</head>
+<body>
+<!-- Sidebar:侧边栏组件-->
+<div th:fragment="sidebar">
+    <div id="sidebar">
+        <header>
+            <a href="/util/index">公司后台管理</a>
+        </header>
+        <ul class="nav">
+            <li>
+                <a href="/customer/listCustomer">
+                    <i class="glyphicon glyphicon-asterisk"></i> 客户管理
+                </a>
+            </li>
+            <li>
+                <a href="/worker/listWorker">
+                    <i class="glyphicon glyphicon-user"></i> 送水工管理
+                </a>
+            </li>
+            <li>
+                <a href="/history/listHistory">
+                    <i class="glyphicon glyphicon-time"></i> 送水记录管理
+                </a>
+            </li>
+            <li>
+                <a href="/util/salary">
+                    <i class="glyphicon glyphicon-grain"></i> 计算工资
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/util/count}">
+                    <i class="glyphicon glyphicon-tint"></i> 统计送水数量
+                </a>
+            </li>
+            <li>
+                <a data-toggle="modal"
+                   data-target="#myModalPwd">
+                    <i class="glyphicon glyphicon-cog"></i> 修改密码
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!--修改密码模态框-->
+    <div class="modal fade" id="myModalPwd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel2">
+                            修改密码框
+                        </h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center">
+                        <div class="input-group col-lg-12" style="margin-top: 10px">
+                            <form th:action="@{/changePwd}" method="post" name="changePwd">
+                                <span class="col-lg-4">原密码：</span>
+                                <span class="col-lg-6">
+                                    <input type="password" class="form-control" name="oldPwd" id="oldPwd">
+                                </span>
+                                <span id="oldPwdTag"></span>
+                                <span class="col-lg-4">修改密码：</span>
+                                <span class="col-lg-6">
+                                    <input type="password" class="form-control" name="nowPwd" id="nowPwd">
+                                </span>
+                            </form>
+                            <span class="col-lg-4">确认密码：</span>
+                            <span class="col-lg-6">
+                                    <input type="password" class="form-control" name="nowTwoPwd" id="nowTwoPwd">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button id="changeSubmit" disabled class="btn btn-primary">
+                            提交
+                        </button>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div>
+    </div>
+    <!--密码验证脚本-->
+    <script th:inline="javascript">
+        $(function () {
+            $("#oldPwd,#nowPwd,#nowTwoPwd").change(
+                function () {
+                    let val1 = $("#oldPwd").val();
+                    let val2 = $("#nowPwd").val();
+                    let val3 = $("#nowTwoPwd").val();
+                    console.log(val1)
+                    console.log(val2)
+                    console.log(val3)
+                    if(val1==null||val1==""){
+                        $("#changeSubmit").attr("disabled","true")
+                        // $("#nowPwd").css("background-color","red")
+                        // $("#nowTwoPwd").css("background-color","red")
+                    }else if(val2==null||val2==""){
+                        $("#changeSubmit").attr("disabled","true")
+                    }else if(val3==null||val3==""){
+                        $("#changeSubmit").attr("disabled","true")
+                    }else if (val2!=val3){
+                        $("#changeSubmit").attr("disabled","true")
+                        $("#nowTwoPwd").css("background-color","red")
+                    }else {
+                        $("#nowPwd").css("background-color","green")
+                        $("#nowTwoPwd").css("background-color","green")
+                        $("#changeSubmit").removeAttr("disabled")
+                    }
+                }
+            )
+        })
+
+        $(function () {
+            $("#oldPwd").change(function () {
+                $.ajax({
+                    url: "/preChangePwd",
+                    type: "post",
+                    data: {
+                        oldPwd: $("#oldPwd").val(),
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        if (data === true) {
+                            $("#oldPwdTag").attr("class","glyphicon glyphicon-ok")
+                            $("#oldPwdTag").css("color","green")
+                            console.log("登录成功")
+                        } else {
+                            $("#oldPwdTag").attr("class","glyphicon glyphicon-remove")
+                            $("#oldPwdTag").css("color","red")
+                            console.log("登录失败")
+                        }
+                    },
+                    error: function (e) {
+                        console.log("faild")
+                    }
+                })
+            })
+        })
+        $(function () {
+            $("#changeSubmit").click(function () {
+                $.ajax({
+                    url: "/changePwd",
+                    type: "post",
+                    data: {
+                        oldPwd: $("#oldPwd").val(),
+                        nowPwd: $("#nowPwd").val()
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        if (data == true) {
+                            window.location="/"
+                            console.log("登录成功")
+                        } else {
+                            window.location="/"
+                            console.log("登录失败")
+                        }
+                    },
+                    error: function (e) {
+                        console.log("faild")
+                    }
+                })
+            })
+        })
+    </script>
+</div>
+
+<!--searchBar: 搜索框复用组件-->
+<div th:fragment="searchBar(searchUrl,searchName)">
+    <!--/*@thymesVar id="searchUrl" type="java.lang.String"*/-->
+    <form th:action="@{${searchUrl}}" th:method="post">
+        <div class="col-lg-4" style="margin-left: 30%;margin-top: 10px;float: left">
+            <div class="input-group">
+                <!--/*@thymesVar id="searchName" type="java.lang.String"*/-->
+                <input type="text" th:value="${#strings.isEmpty(searchName) ? '': searchName}" class="form-control"
+                       name="searchName" required placeholder="请输入用户名">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">搜索</button>
+                    </span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--searchBarTime: 起止日期搜索组件-->
+<div th:fragment="searchBarTime(searchUrl)">
+    <!--/*@thymesVar id="searchUrl" type="java.lang.String"*/-->
+    <form th:action="@{${searchUrl}}" th:method="post">
+        <div class="col-lg-7" style="width: 56%;margin-left: 30%;margin-top: 10px;float: left">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <input class="form-control" type="date" name="start" value="2020-01-01">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <input class="form-control" type="date" name="end" value="2021-12-30">
+                    </div>
+                </div>
+                <span class="col-lg-2">
+                    <div class="input-group">
+                        <button class="form-control btn btn-default" type="submit">搜索</button>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--用户名显示组件-->
+<div th:fragment="user">
+    <nav class="navbar navbar-default" id="user">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
+                    </a>
+                </li>
+                <li><a href="#">用户:[[${session.userName}]]</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<!--分页组件-->
+<div th:fragment="Page">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li>
+                <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li>
+                <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>送水公司后台管理系统</title>
+
+    <div th:replace="component::link"></div>
+</head>
+<body>
+<script th:inline="javascript">
+    function update(worker) {
+        console.log(worker)
+        document.getElementById("wid").value = worker.wid;
+        document.getElementById("workerName").value = worker.workerName;
+        document.getElementById("workerSalary").value = worker.workerSalary;
+        document.getElementById("workerMoney").value = worker.workerMoney;
+        document.getElementById("workerImage").value = worker.workerImage;
+        document.url.action = "/worker/updateWorker";
+    }
+
+    function insert() {
+        document.url.action = "/worker/insertWorker"
+    }
+
+    $(function () {
+        var options = {
+            success: function (data) {
+                console.log(data)
+                $("#workerImage").val(data);
+                $("#prImage").val(data);
+            }
+        };
+        $("#form1").ajaxForm(options);
+    });
+
+    $(function(){
+        $("span[id=addSalary]").click(function () {
+            let wid = $(this).attr("class");
+            let workerSalary = $(this).next().text();
+            workerSalary = parseInt(workerSalary);
+            workerSalary += 100;
+            console.log(wid+"----"+workerSalary);
+            $(this).next().text(workerSalary);
+            // jQuery对AJAX的封装
+            $.ajax({
+                // 提交给服务器的路径
+                url:"/worker/adjustSalary",
+                // 提交给服务器的数据
+                data:{
+                    "wid":wid,
+                    "workerSalary":workerSalary},
+                // 数据的提交方式
+                method:"POST",
+                // 请求成功后的回调函数
+                success:function(data){
+                    if("success" == data) {
+                        toastr.success('工资调整成功');
+                        // alert("工资调整成功");
+                    } else {
+                        toastr.warning('工资调整失败');
+                        // alert("工资调整失败");
+                    }
+                }
+            })
+        })
+
+        $("span[id=subSalary]").click(function () {
+            let wid = $(this).attr("class");
+            let workerSalary = $(this).prev().text();
+            workerSalary = parseInt(workerSalary);
+            console.log(wid+"---"+workerSalary);
+            workerSalary -= 100;
+            $(this).prev().text(workerSalary);
+            $.ajax({
+                url:"/worker/adjustSalary",
+                data:{
+                    "wid":wid,
+                    "workerSalary":workerSalary},
+                method: "POST",
+                success: function (data) {
+                    if('success' == data){
+                        toastr.success('工资调整成功');
+                        // alert("减工资成功");
+                    } else {
+                        toastr.warning('工资调整失败');
+                        alert("减工资失败");
+                    }
+                }
+            })
+        })
+    })
+</script>
+<div id="viewport">
+    <!-- Sidebar -->
+    <div th:include="component::sidebar"></div>
+    <!-- Content -->
+    <div id="content">
+        <div th:include="component::searchBar('/worker/searchWorker',${searchName})"></div>
+        <div th:replace="component::user"></div>
+
+        <div class="text-left">
+            <button onclick="insert()" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                添加送水工
+            </button>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td>编号</td>
+                            <td>名称</td>
+                            <td>底薪</td>
+                            <td>提出</td>
+                            <td>照片</td>
+                            <td>操作</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 渲染后客户列表-->
+                        <tr th:each="worker:${workerList}">
+                            <td th:text="${worker.wid}"></td>
+                            <td th:text="${worker.workerName}"></td>
+                            <td>
+                                <span id="addSalary"
+                                      th:class="${worker.wid}">
+                                    <span class="glyphicon glyphicon-plus" style="color: green" ></span>
+                                </span>
+                                <span th:text="${worker.workerSalary}"></span>
+                                <span id="subSalary"
+                                      th:class="${worker.wid}">
+                                    <span class="glyphicon glyphicon-minus" style="color: red" ></span>
+                                </span>
+                            </td>
+                            <td th:text="${worker.workerMoney}"></td>
+                            <td>
+                                <img th:if="${#strings.isEmpty(worker.workerImage)}" style="width:80px;height:80px"
+                                     src="../../images/user.png"/>
+                                <img th:if="${not #strings.isEmpty(worker.workerImage)}" style="width:80px;height:80px"
+                                     th:src="@{${worker.workerImage}}"
+                                     class="img-thumbnail">
+                            </td>
+                            <td>
+                                <div th:onclick="update([[${worker}]])" class="col-lg-3">
+                                    <button class="btn btn-primary btn-sm glyphicon glyphicon-pencil"
+                                            data-toggle="modal"
+                                            data-target="#myModal">
+                                    </button>
+                                </div>
+                                <a th:href="@{'/worker/deleteWorker/'+${worker.wid}}" class="col-lg-3">
+                                    <button class="btn btn-danger btn-sm glyphicon glyphicon-remove">
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框（添加/修改） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div>
+        <div class="modal-dialog">
+            <div class="modal-content" style="height: 350px">
+                <form th:action="@{/worker/insertWorker}" method="post" name="url">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel2">
+                            信息录入框
+                        </h4>
+                    </div>
+                    <div class="modal-body" style="text-align: center;">
+                        <div class="input-group col-lg-12" style="margin-top: 10px">
+
+                            <input type="text" class="form-control hidden" name="wid" id="wid">
+                            <span class="col-lg-4">送水工名称</span>
+                            <span class="col-lg-6">
+                                <input type="text" class="form-control" name="workerName" id="workerName">
+                            </span>
+                            <span class="col-lg-4">底薪</span>
+                            <span class="col-lg-6">
+                            <input type="text" class="form-control" name="workerSalary" id="workerSalary">
+                            </span>
+                            <span class="col-lg-4">提成</span>
+                            <span class="col-lg-6">
+                                <input type="text" class="form-control" name="workerMoney" id="workerMoney">
+                            </span>
+                            <span class="col-lg-4">照片</span>
+                            <span class="col-lg-6">
+                                <input type="text" class="form-control" name="workerImage" id="workerImage">
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="position:relative;left:450px;top: 70px">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                   <div style="position:relative;left:200px;top: -20px">
+                       <form id="form1" action="/util/uploadPic" method="post"
+                             enctype="multipart/form-data">
+                           <div><input type="file" name="uploadFile" class="col-lg-4"/>
+                               <input type="submit" value="上传图片"/>
+                           </div>
+                       </form>
+                   </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+</body>
+</html>

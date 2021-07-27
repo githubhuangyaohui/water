@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.whut.water.mapper.CustomerMapper">
+    <select id="listCustomer" resultType="com.whut.water.entities.Customer">
+        select cid,cust_name,cust_mobile,cust_address,cust_ticket
+        from customer
+    </select>
+
+    <select id="searchCustomer" resultType="com.whut.water.entities.Customer">
+        select cid,cust_name,cust_mobile,cust_address,cust_ticket
+        from customer
+        where 1 = 1
+        <if test="customerName != null and customerName != ''">
+            and cust_name like concat('%',#{customerName},'%')
+        </if>
+    </select>
+
+    <insert id="insertCustomer" parameterType="com.whut.water.entities.Customer"
+            useGeneratedKeys="true"
+            keyColumn="cid">
+        INSERT INTO customer(cust_name,cust_mobile,cust_address,cust_ticket)
+        VALUES(#{customer.custName},#{customer.custMobile},#{customer.custAddress},#{customer.custTicket})
+    </insert>
+
+    <delete id="deleteCustomer">
+        DELETE FROM customer WHERE cid=#{cid}
+    </delete>
+
+    <update id="updateCustomer" parameterType="com.whut.water.entities.Customer">
+        UPDATE	customer
+        SET cust_name=#{customer.custName},cust_mobile=#{customer.custMobile},cust_address=#{customer.custAddress},cust_ticket=#{customer.custTicket}
+        WHERE cid=#{customer.cid};
+    </update>
+</mapper>
