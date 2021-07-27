@@ -59,33 +59,6 @@ public class UtilController {
         return "count";
     }
 
-    /**
-     * 获取送水数据
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("/getCount")
-    public Map<Date,Integer> getCount(){
-        List<History> history = historyService.listHistory();
-        Map<Date,Integer> map = new LinkedHashMap<>();
-        for (History his : history) {
-            Integer integer = map.get(his.getSendWaterTime());
-            if(integer==null||integer==0){
-                map.put(his.getSendWaterTime(),his.getSendWaterCount());
-            }else{
-                map.replace(his.getSendWaterTime(),his.getSendWaterCount()+integer);
-            }
-        }
-        Set<Map.Entry<Date, Integer>> set = map.entrySet();
-        Iterator<Map.Entry<Date, Integer>> iterator = set.iterator();
-        while(iterator.hasNext()) {
-            Map.Entry<Date, Integer> entry = iterator.next();
-            Date key = entry.getKey();
-            Integer value = entry.getValue();
-            System.out.println("key:" + key + ", value:" + value);
-        }
-        return map;
-    }
 
     //时间格式化
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd/");

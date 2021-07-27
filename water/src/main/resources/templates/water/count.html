@@ -30,7 +30,7 @@
                 var optionCount;
                 $(document).ready(function () {
                     $.ajax({
-                        url: "/util/getCount",
+                        url: "/history/getCount",
                         type: "get",
                         dataType: 'json',
                         success: function (count) {
@@ -40,15 +40,13 @@
                             var countNumber=[]
 
                             for(var index in count){
-                                let sendWaterTime = new Date(index);
+                                let sendWaterTime = new Date(count[index].sendWaterTime);
                                 countDate.push([
                                     sendWaterTime.getFullYear(),
                                     sendWaterTime.getMonth()+1,
                                     sendWaterTime.getDate()
                                 ].join('/'))
-                                countNumber.push(count[index])
-                                console.log(countDate)
-                                console.log(countNumber)
+                                countNumber.push(count[index].sendWaterCountSum)
                             }
                             optionCount = {
                                 tooltip: {

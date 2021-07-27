@@ -73,4 +73,15 @@
         OR ISNULL(history.`send_water_time`)
         GROUP BY worker.`wid`
     </select>
+    <resultMap id="countMap" type="Map">
+        <result property="sendWaterTime" column="send_water_time"></result>
+        <result property="sendWaterCountSum" column="water_count"></result>
+    </resultMap>
+
+    <select id="getCount" resultMap="countMap">
+        SELECT history.`send_water_time`,SUM(history.`send_water_count`) AS water_count
+        FROM history
+        GROUP BY history.`send_water_time`
+        ORDER BY history.`send_water_time` ASC
+    </select>
 </mapper>

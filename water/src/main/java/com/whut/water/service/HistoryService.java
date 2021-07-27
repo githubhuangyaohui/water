@@ -14,5 +14,5 @@ public interface HistoryService {
     int updateHistory(History history,Integer custId,Integer workerId);
     int insertHistory(History history,Integer custId,Integer workerId);
     List<Map> getSalary(String start , String end);
-
+    List<Map> getCount();
 }

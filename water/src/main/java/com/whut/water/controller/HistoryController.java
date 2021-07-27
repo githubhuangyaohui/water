@@ -89,6 +89,17 @@ public class HistoryController {
     }
 
     /**
+     * 获取每天统计送水量数
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getCount",method = RequestMethod.GET)
+    public List<Map> getCount(){
+        List<Map> salaryMap = historyService.getCount();
+        return salaryMap;
+    }
+
+    /**
      * 删除历史信息
      * @param hid
      * @return

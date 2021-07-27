@@ -68,4 +68,9 @@ public class HistoryServiceImpl implements HistoryService {
     public List<Map> getSalary(String start, String end) {
         return historyMapper.getSalary(start,end);
     }
+
+    @Override
+    public List<Map> getCount() {
+        return historyMapper.getCount();
+    }
 }
