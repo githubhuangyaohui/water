@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Component
@@ -18,4 +19,5 @@ public interface HistoryMapper {
     int updateHistory(@Param("history") History history);
     int deleteHistory(@Param("hid") Integer hid);
     int insertHistory(@Param("history") History history);
+    List<Map> getSalary(@Param("start") String start ,@Param("end") String end);
 }

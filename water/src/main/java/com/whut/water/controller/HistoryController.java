@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -63,6 +64,28 @@ public class HistoryController {
         List<History> histories = historyService.searchHistory(start,end);
         model.addAttribute("historyList",histories);
         return "history";
+    }
+    /**
+     * 根据日期统计薪水
+     * @param start
+     * @param end
+     * @param model
+     * @return
+     */
+
+    @ResponseBody
+    @RequestMapping(value = "/getSalary",method = RequestMethod.POST)
+    public List<Map> getSalary(String start, String end, Model model){
+        if(log.isDebugEnabled()){
+            log.debug("start: "+start);
+            log.debug("end: "+end);
+        }
+        if(null==start||null==end){
+            start="2000-01-01";
+            end="2030-01-01";
+        }
+        List<Map> salaryMap = historyService.getSalary(start, end);
+        return salaryMap;
     }
 
     /**

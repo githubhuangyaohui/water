@@ -1,9 +1,9 @@
 package com.whut.water.service;
 
 import com.whut.water.entities.History;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface HistoryService {
@@ -13,4 +13,6 @@ public interface HistoryService {
     History getHistoryById(Integer hid);
     int updateHistory(History history,Integer custId,Integer workerId);
     int insertHistory(History history,Integer custId,Integer workerId);
+    List<Map> getSalary(String start , String end);
+
 }

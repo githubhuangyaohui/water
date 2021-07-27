@@ -14,8 +14,26 @@
     <!-- Content -->
     <div id="content">
         <div class="row">
+                <div class="col-lg-7" style="width: 56%;margin-left: 30%;margin-top: 10px;float: left">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="input-group">
+                                <input id="start" class="form-control" type="date" name="start" value="2000-01-01">
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="input-group">
+                                <input id="end" class="form-control" type="date" name="end" value="2020-12-30">
+                            </div>
+                        </div>
+                        <span class="col-lg-2">
+                    <div class="input-group" id="getSalaryBtn">
+                        <button class="form-control btn btn-default">搜索</button>
+                    </div>
+                </span>
+                    </div>
+                </div>
             <div th:replace="component::user"></div>
-
         </div>
         <div class="container-fluid">
 
@@ -34,6 +52,7 @@
                         <td>员工名称</td>
                         <td>底薪</td>
                         <td>提成</td>
+                        <td>送水数量</td>
                         <td>合计</td>
                     </tr>
                     </thead>
@@ -87,10 +106,22 @@
                 };
                 option && myChart.setOption(option);
 
-                $(document).ready(function () {
+                $(document).ready(loadData())
+
+                $(function () {
+                    $("#getSalaryBtn").click(function () {
+                        loadData()
+                    })
+                })
+
+                function loadData() {
                     $.ajax({
-                        url: "/util/getSalary",
-                        type: "get",
+                        url: "/history/getSalary",
+                        type: "post",
+                        data:{
+                          start: $("#start").val(),
+                          end: $("#end").val()
+                        },
                         dataType: 'json',
                         success: function (data) {
                             toastr.success('数据获取成功');
@@ -104,7 +135,8 @@
                                     + '<td>' + data[index].workerName + '</td>'
                                     + '<td>' + data[index].workerSalary + '</td>'
                                     + '<td>' + data[index].workerMoney + '</td>'
-                                    + '<td>' + Math.round(data[index].workerSalary * data[index].workerMoney) + '</td>'
+                                    + '<td>' + data[index].sendWaterCountSum + '</td>'
+                                    + '<td>' + Math.round(data[index].workerSalary+data[index].workerMoney*data[index].sendWaterCountSum) + '</td>'
                                     + '</tr>'
                             }
                             //放入页面的容器显示
@@ -117,7 +149,7 @@
                                 legendData.push(workerSalaryList[index].workerName);
                                 seriesData.push({
                                     name: workerSalaryList[index].workerName,
-                                    value: Math.round(workerSalaryList[index].workerSalary * workerSalaryList[index].workerMoney)
+                                    value: Math.round(data[index].workerSalary+data[index].workerMoney*data[index].sendWaterCountSum)
                                 });
                             }
                             //设置值
@@ -135,7 +167,7 @@
                             console.log("faild")
                         }
                     })
-                })
+                }
             </script>
         </div>
     </div>

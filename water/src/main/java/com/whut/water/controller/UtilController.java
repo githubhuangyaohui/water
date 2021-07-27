@@ -48,16 +48,6 @@ public class UtilController {
         return "test";
     }
 
-    /**
-     * 获得薪水数据
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("/getSalary")
-    public List<Worker> getSalary(){
-        List<Worker> workers = workerService.listWorker();
-        return workers;
-    }
 
     @RequestMapping("/salary")
     public String salary(){

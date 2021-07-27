@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class HistoryServiceImpl implements HistoryService {
@@ -61,5 +62,10 @@ public class HistoryServiceImpl implements HistoryService {
         history.setCustomer(customer);
 
         return historyMapper.insertHistory(history);
+    }
+
+    @Override
+    public List<Map> getSalary(String start, String end) {
+        return historyMapper.getSalary(start,end);
     }
 }
