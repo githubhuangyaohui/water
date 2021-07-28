@@ -22,26 +22,30 @@
         <script th:src="@{/js/toastr.min.js}"></script>
         <!--图标插件-->
         <script th:src="@{/js/echarts.min.js}"></script>
+        <div th:replace="component::Massage"></div>
+    </div>
+
+    <div th:fragment="Massage">
+        <!--回显消息-->
+        <script th:inline="javascript">
+            $(function () {
+                var successMassage = [[${successMassage}]];
+                console.log(successMassage)
+                if(successMassage!=null&successMassage!=""){
+                    toastr.success(successMassage);
+                }
+                var warningMassage = [[${warningMassage}]];
+                if(warningMassage!=null&warningMassage!=""){
+                    toastr.warning(warningMassage);
+                }
+            })
+        </script>
     </div>
 
 </head>
 <body>
 <!-- Sidebar:侧边栏组件-->
 <div th:fragment="sidebar">
-    <!--回显消息-->
-    <script th:inline="javascript">
-        $(function () {
-            var successMassage = [[${successMassage}]];
-            console.log(successMassage)
-            if(successMassage!=null&successMassage!=""){
-                toastr.success(successMassage);
-            }
-            var warningMassage = [[${warningMassage}]];
-            if(warningMassage!=null&warningMassage!=""){
-                toastr.warning(warningMassage);
-            }
-        })
-    </script>
     <div id="sidebar">
         <header>
             <a href="/util/index">公司后台管理</a>

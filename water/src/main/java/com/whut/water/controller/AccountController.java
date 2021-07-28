@@ -23,8 +23,10 @@ public class AccountController {
         // 条件成立：登录成功，跳转到主页面
         if(loginResult){
             session.setAttribute("userName",userName);
+            model.addAttribute("successMassage","登录成功");
             return "waterMainMenu";
         } else {
+            model.addAttribute("warningMassage","登录失败");
             model.addAttribute("loginFail","用户名或者密码错误");
             return "index";
         }
