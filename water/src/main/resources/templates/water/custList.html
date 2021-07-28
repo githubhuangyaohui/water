@@ -77,43 +77,6 @@
                     </table>
                 </div>
             </div>
-            <!--分页组件-->
-            <div style="text-align: center">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li>
-                            <a id="leftPage" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a id="currentPage">1</a>
-                        </li>
-                        <li>
-                            <a id="rightPage" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <script th:inline="javascript">
-                let currentPage=1;
-                let pageSize=10;
-                $(function () {
-                    $("#leftPage").click(function () {
-                        currentPage-=1;
-                        $("#currentPage").text(currentPage)
-                        toastr.success('上一页'+currentPage);
-                    })
-                    $("#rightPage").click(function () {
-                        currentPage+=1;
-                        $("#currentPage").text(currentPage)
-                        toastr.success('下一页'+currentPage);
-                    })
-                })
-            </script>
-
         </div>
     </div>
 </div>

@@ -17,7 +17,7 @@ public interface CustomerService {
     /**
      * 每页数量
      */
-    public final static int PAGE_SiZE = 3;
+    public final static int PAGE_SiZE = 10;
 
     /**
      * 查询列表分页
