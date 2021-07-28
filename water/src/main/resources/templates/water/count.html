@@ -13,113 +13,101 @@
     <!-- Content -->
     <div id="content">
         <div class="row">
+            <div>
+                <div class="col-lg-4" style="margin-left: 30%;margin-top: 10px;float: left">
+                    <div class="input-group">
+                        <!--/*@thymesVar id="searchName" type="java.lang.String"*/-->
+                        <input id="searchNameInput" type="text" class="form-control" required placeholder="请输入用户名">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" id="searchWorkerMassageBtn">搜索</button>
+                    </span>
+                    </div>
+                </div>
+            </div>
             <div th:replace="component::user"></div>
         </div>
         <div class="container-fluid">
-<!--            <div id="main" style="width: 50%;height:600px;float: left;text-align: center">-->
-<!--                <div style="font-size: 2em;margin-top: 250px">-->
-<!--                    玉汝于成送水公司后台管理系统-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <td>编号</td>
+                            <td>员工名称</td>
+                            <td>客户列表</td>
+                            <td>送水总数</td>
+                        </tr>
+                        </thead>
+                        <tbody id="countTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
 
-            <div id="count" style="width: 100%;height:600px;float: left;text-align: center"></div>
-            <script th:inline="javascript">
-                var chartDom = document.getElementById('count');
-                var myChart = echarts.init(chartDom);
-                var optionCount;
-                $(document).ready(function () {
-                    $.ajax({
-                        url: "/history/getCount",
-                        type: "get",
-                        dataType: 'json',
-                        success: function (count) {
-                            toastr.success('数据获取成功');
-                            console.log(count)
-                            var countDate=[]
-                            var countNumber=[]
-
-                            for(var index in count){
-                                let sendWaterTime = new Date(count[index].sendWaterTime);
-                                countDate.push([
-                                    sendWaterTime.getFullYear(),
-                                    sendWaterTime.getMonth()+1,
-                                    sendWaterTime.getDate()
-                                ].join('/'))
-                                countNumber.push(count[index].sendWaterCountSum)
-                            }
-                            optionCount = {
-                                tooltip: {
-                                    trigger: 'axis',
-                                    position: function (pt) {
-                                        return [pt[0], '50%'];
-                                    }
-                                },
-                                title: {
-                                    left: 'center',
-                                    text: '每日送水数据统计图',
-                                },
-                                toolbox: {
-                                    feature: {
-                                        dataZoom: {
-                                            yAxisIndex: 'none'
-                                        },
-                                        restore: {},
-                                        saveAsImage: {}
-                                    }
-                                },
-                                xAxis: {
-                                    type: 'category',
-                                    boundaryGap: false,
-                                    data: countDate
-                                },
-                                yAxis: {
-                                    type: 'value',
-                                    boundaryGap: [0, '100%']
-                                },
-                                dataZoom: [{
-                                    type: 'inside',
-                                    start: 0,
-                                    end: 50
-                                }, {
-                                    start: 0,
-                                    end: 10
-                                }],
-                                series: [
-                                    {
-                                        name: '送水数量',
-                                        type: 'line',
-                                        symbol: 'none',
-                                        sampling: 'lttb',
-                                        itemStyle: {
-                                            color: 'rgb(255, 70, 131)'
-                                        },
-                                        areaStyle: {
-                                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                                offset: 0,
-                                                color: 'rgb(255, 158, 68)'
-                                            }, {
-                                                offset: 1,
-                                                color: 'rgb(255, 70, 131)'
-                                            }])
-                                        },
-                                        data: countNumber
-                                    }
-                                ]
-                            };
-                            optionCount && myChart.setOption(optionCount);
-                        },
-                        error: function (e) {
-                            toastr.warning('数据获取失败');
-                            console.log("faild")
-                        }
-                    })
-                })
-            </script>
         </div>
     </div>
-
 </div>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url: "/worker/workerMassage",
+            type: "post",
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                toastr.success('数据获取成功');
+                loadCountMassage(data)
+            },
+            error: function (e) {
+                console.log("faild")
+                toastr.warning('数据获取失败');
+            }
+        })
+    })
 
+    $(function () {
+        $("#searchWorkerMassageBtn").click(function () {
+            searchCountMassage()
+        })
+        $("#searchNameInput").on("keypress",function () {
+            searchCountMassage()
+        })
+    })
+    function searchCountMassage() {
+        $.ajax({
+            url: "/worker/searchWorkerMassage",
+            type: "post",
+            data:{
+                searchName: $("#searchNameInput").val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                toastr.success('搜索成功');
+                loadCountMassage(data)
+            },
+            error: function (e) {
+                console.log("faild")
+                toastr.warning('搜索失败');
+            }
+        })
+    }
+
+    function loadCountMassage(data) {
+        var str = '';
+        //对数据做遍历，拼接到页面显示
+        for (var index in data) {
+            str += '<tr>'
+                + '<td>' + data[index].wid + '</td>'
+                + '<td>' + data[index].workerName + '</td>'
+                + '<td>' + data[index].customerList + '</td>'
+                + '<td>' + data[index].sendWaterCountSum + '</td>'
+                + '</tr>'
+        }
+        //放入页面的容器显示
+        $('#countTableBody').html(str);
+    }
+</script>
 </body>
 </html>

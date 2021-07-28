@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/worker")
@@ -69,5 +70,23 @@ public class WorkerController {
     @RequestMapping(value = "/adjustSalary",method = RequestMethod.POST)
     public String adjustSalary(Integer wid,Integer workerSalary){
         return workerService.adjustSalary(wid,workerSalary)>0 ? "success" : "fail";
+    }
+    /**
+     * 获取工人统计数据
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/workerMassage",method = RequestMethod.POST)
+    public List<Map> workerMassage(){
+        return workerService.workerMassage();
+    }
+    /**
+     * 获取工人统计数据
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/searchWorkerMassage",method = RequestMethod.POST)
+    public List<Map> searchWorkerMassage(String searchName){
+        return workerService.searchWorkerMassage(searchName);
     }
 }

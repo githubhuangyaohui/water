@@ -38,4 +38,31 @@
         SET worker_salary=#{workerSalary}
         WHERE wid=#{wid};
     </update>
+
+
+    <resultMap id="workerMassageMap" type="Map">
+        <id column="wid" property="wid"></id>
+        <result property="workerName" column="worker_name"></result>
+        <result property="customerList" column="customer_list"></result>
+        <result property="sendWaterCountSum" column="send_water_count_sum"></result>
+        <result property="sendWaterCountSum" column="send_water_count_sum"></result>
+    </resultMap>
+
+    <select id="workerMassage" resultMap="workerMassageMap">
+        select w.wid , w.worker_name,
+        ifnull(group_concat(distinct c.cust_name),'-') as customer_list,
+        ifnull(sum(h.send_water_count),0) as send_water_count_sum
+        from worker w left join history h on w.wid = h.worker_id left join customer c on c.cid = h.cust_id
+        group by w.wid
+        order by send_water_count_sum desc;
+    </select>
+    <select id="searchWorkerMassage" resultMap="workerMassageMap">
+        select w.wid , w.worker_name,
+        ifnull(group_concat(distinct c.cust_name),'-') as customer_list,
+        ifnull(sum(h.send_water_count),0) as send_water_count_sum
+        from worker w left join history h on w.wid = h.worker_id left join customer c on c.cid = h.cust_id
+        WHERE w.`worker_name` LIKE CONCAT('%',#{searchName},'%')
+        group by w.wid
+        order by send_water_count_sum desc;
+    </select>
 </mapper>

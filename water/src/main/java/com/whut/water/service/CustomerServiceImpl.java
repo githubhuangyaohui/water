@@ -1,5 +1,6 @@
 package com.whut.water.service;
 
+import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Customer;
 import com.whut.water.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public int updateCustomer(Customer customer) {
         return customerMapper.updateCustomer(customer);
+    }
+
+    @Override
+    public PageInfo<Customer> listCustomerForPage(Integer pageNum) {
+        return null;
+    }
+
+    @Override
+    public PageInfo<Customer> searchCustomer(Integer pageNum, String custName) {
+        return null;
     }
 }

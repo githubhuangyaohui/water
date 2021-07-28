@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WorkerServiceImpl implements WorkerService {
@@ -41,5 +42,15 @@ public class WorkerServiceImpl implements WorkerService {
     @Override
     public int adjustSalary(Integer wid, Integer workerSalary) {
         return workerMapper.adjustSalary(wid,workerSalary);
+    }
+
+    @Override
+    public List<Map> workerMassage() {
+        return workerMapper.workerMassage();
+    }
+
+    @Override
+    public List<Map> searchWorkerMassage(String searchName) {
+        return workerMapper.searchWorkerMassage(searchName);
     }
 }

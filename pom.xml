@@ -38,11 +38,18 @@
         <webjars.bootstrap.version>3.3.7</webjars.bootstrap.version>
         <webjars.jquery.version>3.3.1</webjars.jquery.version>
         <webjars.bootstrap-datetimepicker.version>2.4.4</webjars.bootstrap-datetimepicker.version>
-
+        <pagehelper.version>1.3.1</pagehelper.version>
     </properties>
     <!--父工程管理子模块jar包的版本,不导入jar包，让子模块中引用依赖而不用显示的列出版本号-->
     <dependencyManagement>
         <dependencies>
+            <!--mybatis分页插件-->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+
             <!--SpringBoot 2.2.2.RELEASE-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
