@@ -126,8 +126,8 @@ public class HistoryController {
             log.debug("end: "+end);
         }
         if(null==start||null==end){
-            start="2000-01-01";
-            end="2030-01-01";
+            start="2020-01-01";
+            end="2021-01-01";
         }
         List<Map> salaryMap = historyService.getSalary(start, end);
         return salaryMap;
@@ -150,9 +150,14 @@ public class HistoryController {
      * @return
      */
     @RequestMapping("/deleteHistory/{hid}")
-    public String deleteCustomer(@PathVariable("hid")Integer hid){
+    public String deleteCustomer(@PathVariable("hid")Integer hid,Model model){
         int i = historyService.deleteHistory(hid);
-        return "redirect:/history/historyListPage";
+        if(i>0){
+            model.addAttribute("successMassage","删除成功");
+        }else{
+            model.addAttribute("warningMassage","删除失败");
+        }
+        return "forward:/history/historyListPage";
     }
 
     /**
@@ -163,31 +168,26 @@ public class HistoryController {
      * @return
      */
     @RequestMapping(value = "/updateHistory",method = RequestMethod.POST)
-    public String updateHistory(History history,Integer custId,Integer workerId) {
-//        if (log.isInfoEnabled()) {
-//            log.info("updateHistory "+history);
-//            log.info("workerId = "+workerId);
-//            log.info("custId = "+custId);
-//        }
-        int rows = historyService.updateHistory(history,custId,workerId);
-//        if (log.isInfoEnabled()) {
-//            log.info("update history rows = "+rows);
-//        }
-        return "redirect:/history/historyListPage";
+    public String updateHistory(History history,Integer custId,Integer workerId,Model model) {
+
+        int i = historyService.updateHistory(history,custId,workerId);
+        if(i>0){
+            model.addAttribute("successMassage","更新成功");
+        }else{
+            model.addAttribute("warningMassage","更新失败");
+        }
+        return "forward:/history/historyListPage";
     }
 
     @RequestMapping(value = "/insertHistory",method = RequestMethod.POST)
-    public String insertHistory(History history,Integer custId,Integer workerId) {
-//        if (log.isInfoEnabled()) {
-//            log.info("updateHistory "+history);
-//            log.info("workerId = "+workerId);
-//            log.info("custId = "+custId);
-//        }
-        int rows = historyService.insertHistory(history,custId,workerId);
-//        if (log.isInfoEnabled()) {
-//            log.info("insert history rows = "+rows);
-//        }
-        return "redirect:/history/historyListPage";
+    public String insertHistory(History history,Integer custId,Integer workerId,Model model) {
+        int i = historyService.insertHistory(history,custId,workerId);
+        if(i>0){
+            model.addAttribute("successMassage","添加成功");
+        }else{
+            model.addAttribute("warningMassage","添加失败");
+        }
+        return "forward:/history/historyListPage";
     }
 
     @ResponseBody

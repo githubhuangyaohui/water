@@ -3,6 +3,7 @@ package com.whut.water.service;
 import com.whut.water.WaterSpringBootApplication;
 import com.whut.water.entities.Customer;
 import com.whut.water.entities.History;
+import com.whut.water.entities.Worker;
 import javafx.application.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
@@ -29,10 +31,13 @@ public class HistoryServiceTest {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    WorkerService workerService;
+
     @Test
     public void addHistory() {
-//        Integer[] wid={1,2,3,4,6,7,9,83,84,85,86,87,88,89,90};
-//        Integer[] cid={1,2,3,4,19,20,21};
+//        List<Worker> workers = workerService.listWorker();
+//        List<Customer> customers = customerService.listCustomer();
 //        //日期格式化
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 //        try {
@@ -46,13 +51,11 @@ public class HistoryServiceTest {
 //            //打印2001年10月1日到2001年11月4日的日期
 //            while(tmp.getTime()<=d2.getTime()) {
 //                tmp=dd.getTime();
-//                Integer wids=wid[(int) (Math.random()*wid.length)];
-//                Integer cids=cid[(int) (Math.random()*cid.length)];
+//
+//                Integer wids=workers.get((int) (Math.random()*workers.size())).getWid();
+//                Integer cids=customers.get((int) (Math.random()*customers.size())).getCid();
 //                Integer count=(int) (Math.random()*100);
-//                System.out.print(sdf.format(tmp)+":");
-//                System.out.print(wids+"+"+cids);
-//                System.out.print("+"+count);
-//                System.out.println();
+//
 //                History history = new History();
 //                history.setSendWaterTime(tmp);
 //                history.setSendWaterCount(count);

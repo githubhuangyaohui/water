@@ -55,6 +55,16 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
+    public boolean isHaveHistoryByWid(Integer wid) {
+        return historyMapper.getHistoryByWId(wid).size()>0?true:false;
+    }
+
+    @Override
+    public boolean isHaveHistoryByCid(Integer cid) {
+        return historyMapper.getHistoryByCId(cid).size()>0?true:false;
+    }
+
+    @Override
     public int updateHistory(History history,Integer custId,Integer workerId) {
         Customer customer = new Customer();
         customer.setCid(custId);

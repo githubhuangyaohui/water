@@ -14,7 +14,11 @@ import java.util.Map;
 @Component
 public interface HistoryMapper {
     List<History> listHistory();
+
     History getHistoryById(Integer hid);
+    List<History> getHistoryByWId(@Param("wid") Integer wid);
+    List<History> getHistoryByCId(@Param("cid") Integer cid);
+
     List<History> searchHistory(@Param("start")String start,@Param("end") String end);
     int updateHistory(@Param("history") History history);
     int deleteHistory(@Param("hid") Integer hid);

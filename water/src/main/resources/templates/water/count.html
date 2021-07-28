@@ -5,6 +5,68 @@
     <title>送水公司后台管理系统</title>
     <!--引用依赖-->
     <div th:replace="component::link"></div>
+
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: "/worker/workerMassage",
+                type: "post",
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    toastr.success('数据获取成功');
+                    loadCountMassage(data)
+                },
+                error: function (e) {
+                    console.log("faild")
+                    toastr.warning('数据获取失败');
+                }
+            })
+        })
+
+        $(function () {
+            $("#searchWorkerMassageBtn").click(function () {
+                searchCountMassage()
+            })
+            $("#searchNameInput").on("keypress",function () {
+                searchCountMassage()
+            })
+        })
+        function searchCountMassage() {
+            $.ajax({
+                url: "/worker/searchWorkerMassage",
+                type: "post",
+                data:{
+                    searchName: $("#searchNameInput").val()
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    toastr.success('搜索成功');
+                    loadCountMassage(data)
+                },
+                error: function (e) {
+                    console.log("faild")
+                    toastr.warning('搜索失败');
+                }
+            })
+        }
+
+        function loadCountMassage(data) {
+            var str = '';
+            //对数据做遍历，拼接到页面显示
+            for (var index in data) {
+                str += '<tr>'
+                    + '<td>' + data[index].wid + '</td>'
+                    + '<td>' + data[index].workerName + '</td>'
+                    + '<td style="white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">' + data[index].customerList + '</td>'
+                    + '<td>' + data[index].sendWaterCountSum + '</td>'
+                    + '</tr>'
+            }
+            //放入页面的容器显示
+            $('#countTableBody').html(str);
+        }
+    </script>
 </head>
 <body>
 <div id="viewport">
@@ -48,66 +110,5 @@
         </div>
     </div>
 </div>
-<script th:inline="javascript">
-    $(document).ready(function () {
-        $.ajax({
-            url: "/worker/workerMassage",
-            type: "post",
-            dataType: 'json',
-            success: function (data) {
-                console.log(data)
-                toastr.success('数据获取成功');
-                loadCountMassage(data)
-            },
-            error: function (e) {
-                console.log("faild")
-                toastr.warning('数据获取失败');
-            }
-        })
-    })
-
-    $(function () {
-        $("#searchWorkerMassageBtn").click(function () {
-            searchCountMassage()
-        })
-        $("#searchNameInput").on("keypress",function () {
-            searchCountMassage()
-        })
-    })
-    function searchCountMassage() {
-        $.ajax({
-            url: "/worker/searchWorkerMassage",
-            type: "post",
-            data:{
-                searchName: $("#searchNameInput").val()
-            },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data)
-                toastr.success('搜索成功');
-                loadCountMassage(data)
-            },
-            error: function (e) {
-                console.log("faild")
-                toastr.warning('搜索失败');
-            }
-        })
-    }
-
-    function loadCountMassage(data) {
-        var str = '';
-        //对数据做遍历，拼接到页面显示
-        for (var index in data) {
-            str += '<tr>'
-                + '<td>' + data[index].wid + '</td>'
-                + '<td>' + data[index].workerName + '</td>'
-                + '<td>' + data[index].customerList + '</td>'
-                + '<td>' + data[index].sendWaterCountSum + '</td>'
-                + '</tr>'
-        }
-        //放入页面的容器显示
-        $('#countTableBody').html(str);
-    }
-</script>
 </body>
 </html>

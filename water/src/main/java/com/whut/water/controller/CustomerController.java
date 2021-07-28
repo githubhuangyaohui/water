@@ -2,7 +2,9 @@ package com.whut.water.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Customer;
+import com.whut.water.entities.History;
 import com.whut.water.service.CustomerService;
+import com.whut.water.service.HistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    HistoryService historyService;
 
     @RequestMapping(value = "/searchCustomer",method = RequestMethod.POST)
     public String searchCustomer(String searchName, Model model){
@@ -88,9 +93,14 @@ public class CustomerController {
      * @return
      */
     @RequestMapping(value = "/updateCustomer",method = RequestMethod.POST)
-    public String updateCustomer(Customer customer){
+    public String updateCustomer(Customer customer ,Model model){
         int i = customerService.updateCustomer(customer);
-        return "redirect:/customer/customerListPage";
+        if(i>0){
+            model.addAttribute("successMassage","更新成功");
+        }else{
+            model.addAttribute("warningMassage","更新失败");
+        }
+        return "forward:/customer/customerListPage";
     }
 
     /**
@@ -99,9 +109,14 @@ public class CustomerController {
      * @return
      */
     @RequestMapping(value = "/insertCustomer",method = RequestMethod.POST)
-    public String insertCustomer(Customer customer){
+    public String insertCustomer(Customer customer,Model model){
         int i = customerService.insertCustomer(customer);
-        return "redirect:/customer/customerListPage";
+        if(i>0){
+            model.addAttribute("successMassage","添加成功");
+        }else{
+            model.addAttribute("warningMassage","添加失败");
+        }
+        return "forward:/customer/customerListPage";
     }
 
 
@@ -111,8 +126,17 @@ public class CustomerController {
      * @return
      */
     @RequestMapping("/deleteCustomer/{cid}")
-    public String deleteCustomer(@PathVariable("cid")Integer cid){
-        int i = customerService.deleteCustomer(cid);
-        return "redirect:/customer/customerListPage";
+    public String deleteCustomer(@PathVariable("cid")Integer cid,Model model){
+        if(historyService.isHaveHistoryByCid(cid)){
+            model.addAttribute("warningMassage","有记录不能删除");
+        }else{
+            int i = customerService.deleteCustomer(cid);
+            if(i>0){
+                model.addAttribute("successMassage","删除成功");
+            }else{
+                model.addAttribute("warningMassage","删除失败");
+            }
+        }
+        return "forward:/customer/customerListPage";
     }
 }

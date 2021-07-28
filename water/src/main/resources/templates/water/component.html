@@ -28,6 +28,20 @@
 <body>
 <!-- Sidebar:侧边栏组件-->
 <div th:fragment="sidebar">
+    <!--回显消息-->
+    <script th:inline="javascript">
+        $(function () {
+            var successMassage = [[${successMassage}]];
+            console.log(successMassage)
+            if(successMassage!=null&successMassage!=""){
+                toastr.success(successMassage);
+            }
+            var warningMassage = [[${warningMassage}]];
+            if(warningMassage!=null&warningMassage!=""){
+                toastr.warning(warningMassage);
+            }
+        })
+    </script>
     <div id="sidebar">
         <header>
             <a href="/util/index">公司后台管理</a>
@@ -36,6 +50,7 @@
             <li>
                 <a href="/customer/customerListPage">
                     <i class="glyphicon glyphicon-asterisk"></i> 客户管理
+                    <div th:value="${warningMassage}"></div>
                 </a>
             </li>
             <li>
@@ -68,7 +83,8 @@
     </div>
 
     <!--修改密码模态框-->
-    <div class="modal fade" id="myModalPwd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModalPwd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
         <div>
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -121,20 +137,20 @@
                     console.log(val1)
                     console.log(val2)
                     console.log(val3)
-                    if(val1==null||val1==""){
-                        $("#changeSubmit").attr("disabled","true")
+                    if (val1 == null || val1 == "") {
+                        $("#changeSubmit").attr("disabled", "true")
                         // $("#nowPwd").css("background-color","red")
                         // $("#nowTwoPwd").css("background-color","red")
-                    }else if(val2==null||val2==""){
-                        $("#changeSubmit").attr("disabled","true")
-                    }else if(val3==null||val3==""){
-                        $("#changeSubmit").attr("disabled","true")
-                    }else if (val2!=val3){
-                        $("#changeSubmit").attr("disabled","true")
-                        $("#nowTwoPwd").css("background-color","red")
-                    }else {
-                        $("#nowPwd").css("background-color","green")
-                        $("#nowTwoPwd").css("background-color","green")
+                    } else if (val2 == null || val2 == "") {
+                        $("#changeSubmit").attr("disabled", "true")
+                    } else if (val3 == null || val3 == "") {
+                        $("#changeSubmit").attr("disabled", "true")
+                    } else if (val2 != val3) {
+                        $("#changeSubmit").attr("disabled", "true")
+                        $("#nowTwoPwd").css("background-color", "red")
+                    } else {
+                        $("#nowPwd").css("background-color", "green")
+                        $("#nowTwoPwd").css("background-color", "green")
                         $("#changeSubmit").removeAttr("disabled")
                     }
                 }
@@ -153,12 +169,12 @@
                     success: function (data) {
                         console.log(data)
                         if (data === true) {
-                            $("#oldPwdTag").attr("class","glyphicon glyphicon-ok")
-                            $("#oldPwdTag").css("color","green")
+                            $("#oldPwdTag").attr("class", "glyphicon glyphicon-ok")
+                            $("#oldPwdTag").css("color", "green")
                             console.log("登录成功")
                         } else {
-                            $("#oldPwdTag").attr("class","glyphicon glyphicon-remove")
-                            $("#oldPwdTag").css("color","red")
+                            $("#oldPwdTag").attr("class", "glyphicon glyphicon-remove")
+                            $("#oldPwdTag").css("color", "red")
                             console.log("登录失败")
                         }
                     },
@@ -181,10 +197,10 @@
                     success: function (data) {
                         console.log(data)
                         if (data == true) {
-                            window.location="/"
+                            window.location = "/"
                             console.log("登录成功")
                         } else {
-                            window.location="/"
+                            window.location = "/"
                             console.log("登录失败")
                         }
                     },
@@ -222,12 +238,14 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="input-group">
-                        <input class="form-control" type="date" name="searchName" th:value="${#strings.isEmpty(searchName) ? '2000-01-01': searchName}">
+                        <input class="form-control" type="date" name="searchName"
+                               th:value="${#strings.isEmpty(searchName) ? '2000-01-01': searchName}">
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="input-group">
-                        <input class="form-control" type="date" name="searchName2" th:value="${#strings.isEmpty(searchName2) ? '2021-12-30': searchName2}">
+                        <input class="form-control" type="date" name="searchName2"
+                               th:value="${#strings.isEmpty(searchName2) ? '2021-12-30': searchName2}">
                     </div>
                 </div>
                 <span class="col-lg-2">
@@ -243,22 +261,20 @@
 <!--用户名显示组件-->
 <div th:fragment="user">
     <nav class="navbar navbar-default" id="user">
-        <div class="container-fluid">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
-                    </a>
-                </li>
-                <li><a href="#">用户:[[${session.userName}]]</a></li>
-            </ul>
-        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
+                </a>
+            </li>
+            <li><a href="#">用户:[[${session.userName}]]</a></li>
+        </ul>
     </nav>
 </div>
 <!--分页组件复用-->
 <div th:fragment="pageComponent(pageData,pageInfo,listPageUrl,searchPageUrl,searchName,searchName2)">
     <div class="col-md-12">
         <!--/*@thymesVar id="pageData" type="PageData"*/-->
-        <div th:switch="${pageData}" class="modal-footer no-margin-top" >
+        <div th:switch="${pageData}" class="modal-footer no-margin-top">
             <div class="col-md-6">
                 当前第 [[${pageInfo.pageNum}]]页,共 [[${pageInfo.pages}]] 页.一共 [[${pageInfo.total}]] 条记录
             </div>
@@ -275,8 +291,10 @@
                 </li>
                 <!--遍历条数-->
                 <li th:each="nav:${pageInfo.navigatepageNums}">
-                    <a th:href="${listPageUrl}+'?pageNum='+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
-                    <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}" th:text="${nav}" ></span>
+                    <a th:href="${listPageUrl}+'?pageNum='+${nav}" th:text="${nav}"
+                       th:if="${nav != pageInfo.pageNum}"></a>
+                    <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}"
+                          th:text="${nav}"></span>
                 </li>
 
                 <li class="next" th:if="${pageInfo.hasNextPage}">
@@ -302,8 +320,10 @@
                 </li>
                 <!--遍历条数-->
                 <li th:each="nav:${pageInfo.navigatepageNums}">
-                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum='+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
-                    <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}" th:text="${nav}" ></span>
+                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum='+${nav}"
+                       th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
+                    <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}"
+                          th:text="${nav}"></span>
                 </li>
 
                 <li class="next" th:if="${pageInfo.hasNextPage}">

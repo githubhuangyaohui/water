@@ -32,6 +32,8 @@ public interface HistoryService {
 
     int deleteHistory(Integer hid);
     History getHistoryById(Integer hid);
+    boolean isHaveHistoryByWid(Integer wid);
+    boolean isHaveHistoryByCid(Integer cid);
     int updateHistory(History history,Integer custId,Integer workerId);
     int insertHistory(History history,Integer custId,Integer workerId);
     List<Map> getSalary(String start , String end);

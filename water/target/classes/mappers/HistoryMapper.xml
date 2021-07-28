@@ -19,6 +19,15 @@
         </association>
     </resultMap>
 
+    <select id="getHistoryByWId" resultMap="historyMap">
+        SELECT * FROM history
+                WHERE worker_id =#{wid}
+    </select>
+    <select id="getHistoryByCId" resultMap="historyMap">
+        SELECT * FROM history
+                WHERE cust_id =#{cid}
+    </select>
+
     <select id="listHistory" resultMap="historyMap">
         SELECT h.`hid`,c.`cid`,c.`cust_name`,w.`wid`, w.`worker_name`,h.`send_water_time`,h.`send_water_count`
         FROM history h,worker w,customer c
@@ -75,6 +84,8 @@
         OR ISNULL(history.`send_water_time`)
         GROUP BY worker.`wid`
     </select>
+
+
     <resultMap id="countMap" type="Map">
         <result property="sendWaterTime" column="send_water_time"></result>
         <result property="sendWaterCountSum" column="water_count"></result>
@@ -86,4 +97,9 @@
         GROUP BY history.`send_water_time`
         ORDER BY history.`send_water_time` ASC
     </select>
+
+
+
+
+
 </mapper>

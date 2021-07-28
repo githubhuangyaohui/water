@@ -3,6 +3,7 @@ package com.whut.water.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Worker;
+import com.whut.water.service.HistoryService;
 import com.whut.water.service.WorkerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class WorkerController {
 
     @Autowired
     private WorkerService workerService;
+
+    @Autowired
+    HistoryService historyService;
 
     @RequestMapping(value = "/searchWorker",method = RequestMethod.POST)
     public String searchWorker(String searchName, Model model){
@@ -90,19 +94,39 @@ public class WorkerController {
 
 
     @RequestMapping(value = "/updateWorker",method = RequestMethod.POST)
-    public String updateWorker(Worker worker){
+    public String updateWorker(Worker worker,Model model){
         int i = workerService.updateWorker(worker);
-        return "redirect:/worker/workerListPage";
+        if(i>0){
+            model.addAttribute("successMassage","更新成功");
+        }else{
+            model.addAttribute("warningMassage","更新失败");
+        }
+        return "forward:/worker/workerListPage";
     }
     @RequestMapping(value = "/insertWorker",method = RequestMethod.POST)
-    public String insertWorker(Worker worker){
+    public String insertWorker(Worker worker,Model model){
         int i = workerService.insertWorker(worker);
-        return "redirect:/worker/workerListPage";
+        if(i>0){
+            model.addAttribute("successMassage","添加成功");
+        }else{
+            model.addAttribute("warningMassage","添加失败");
+        }
+        return "forward:/worker/workerListPage";
     }
+
     @RequestMapping("/deleteWorker/{wid}")
-    public String deleteWorker(@PathVariable("wid")Integer wid){
-        int i = workerService.deleteWorker(wid);
-        return "redirect:/worker/workerListPage";
+    public String deleteWorker(@PathVariable("wid")Integer wid,Model model){
+        if(historyService.isHaveHistoryByWid(wid)){
+            model.addAttribute("warningMassage","有记录不能删除");
+        }else{
+            int i = workerService.deleteWorker(wid);
+            if(i>0){
+                model.addAttribute("successMassage","删除成功");
+            }else{
+                model.addAttribute("warningMassage","删除失败");
+            }
+        }
+        return "forward:/worker/workerListPage";
     }
 
     /**

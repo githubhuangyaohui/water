@@ -5,25 +5,23 @@
     <title>送水公司后台管理系统</title>
 
     <div th:replace="component::link"></div>
+
+    <script th:inline="javascript">
+        function update(cust) {
+            console.log(cust)
+            document.getElementById("cid").value = cust.cid;
+            document.getElementById("custName").value = cust.custName;
+            document.getElementById("custMobile").value = cust.custMobile;
+            document.getElementById("custAddress").value = cust.custAddress;
+            document.getElementById("custTicket").value = cust.custTicket;
+            document.url.action = "/customer/updateCustomer";
+        }
+        function insert() {
+            document.url.action = "/customer/insertCustomer"
+        }
+    </script>
 </head>
 <body>
-<script th:inline="javascript">
-    function update(cust) {
-        console.log(cust)
-        document.getElementById("cid").value = cust.cid;
-        document.getElementById("custName").value = cust.custName;
-        document.getElementById("custMobile").value = cust.custMobile;
-        document.getElementById("custAddress").value = cust.custAddress;
-        document.getElementById("custTicket").value = cust.custTicket;
-        document.url.action = "/customer/updateCustomer";
-    }
-    function insert() {
-        document.url.action = "/customer/insertCustomer"
-    }
-
-
-
-</script>
 <div id="viewport">
     <!-- Sidebar -->
     <div th:include="component::sidebar">

@@ -5,80 +5,81 @@
     <title>送水公司后台管理系统</title>
 
     <div th:replace="component::link"></div>
+
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: "/history/getCustomerList",
+                type: "get",
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    //获取需要的数据
+                    var group = data;
+                    //拼接字符串
+                    var str = '';
+                    //对数据做遍历，拼接到页面显示
+                    for (var i = 0; i < group.length; i++) {
+                        str += '<option value="' + group[i].cid + '">' + group[i].custName + '</option>';
+                    }
+                    //放入页面的容器显示
+                    $('#customer').html(str);
+                },
+                error: function (e) {
+                    console.log("faild")
+                }
+            })
+
+            $.ajax({
+                url: "/history/getWorkerList",
+                type: "get",
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    //获取需要的数据
+                    var group = data;
+                    //拼接字符串
+                    var str = '';
+                    //对数据做遍历，拼接到页面显示
+                    for (var i = 0; i < group.length; i++) {
+                        str += '<option value="' + group[i].wid + '">' + group[i].workerName + '</option>';
+                    }
+                    //放入页面的容器显示
+                    $('#worker').html(str);
+                },
+                error: function (e) {
+                    console.log("faild")
+                }
+            })
+        })
+
+        function update(history) {
+            console.log(history)
+            document.getElementById("hid").value = history.hid;
+            document.getElementById("worker").value = history.worker.wid;
+            document.getElementById("customer").value = history.customer.cid;
+            console.log(document.getElementById("sendWaterTime").value)
+            document.getElementById("sendWaterTime").value = formatDate(history.sendWaterTime);
+            // document.getElementById("sendWaterTime").value = "1000-10-13";
+            document.getElementById("sendWaterCount").value = history.sendWaterCount;
+
+
+            document.url.action = "/history/updateHistory";
+        }
+
+        function formatDate(date) {
+            date = new Date(date); //转换成Data();
+            console.log(date);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? '0' + m : m;
+            var d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            return y + '-' + m + '-' + d;
+        }
+    </script>
 </head>
 <body>
-<script th:inline="javascript">
-    $(document).ready(function () {
-        $.ajax({
-            url: "/history/getCustomerList",
-            type: "get",
-            dataType: 'json',
-            success: function (data) {
-                console.log(data)
-                //获取需要的数据
-                var group = data;
-                //拼接字符串
-                var str = '';
-                //对数据做遍历，拼接到页面显示
-                for (var i = 0; i < group.length; i++) {
-                    str += '<option value="' + group[i].cid + '">' + group[i].custName + '</option>';
-                }
-                //放入页面的容器显示
-                $('#customer').html(str);
-            },
-            error: function (e) {
-                console.log("faild")
-            }
-        })
-
-        $.ajax({
-            url: "/history/getWorkerList",
-            type: "get",
-            dataType: 'json',
-            success: function (data) {
-                console.log(data)
-                //获取需要的数据
-                var group = data;
-                //拼接字符串
-                var str = '';
-                //对数据做遍历，拼接到页面显示
-                for (var i = 0; i < group.length; i++) {
-                    str += '<option value="' + group[i].wid + '">' + group[i].workerName + '</option>';
-                }
-                //放入页面的容器显示
-                $('#worker').html(str);
-            },
-            error: function (e) {
-                console.log("faild")
-            }
-        })
-    })
-
-    function update(history) {
-        console.log(history)
-        document.getElementById("hid").value = history.hid;
-        document.getElementById("worker").value = history.worker.wid;
-        document.getElementById("customer").value = history.customer.cid;
-        console.log(document.getElementById("sendWaterTime").value)
-        document.getElementById("sendWaterTime").value = formatDate(history.sendWaterTime);
-        // document.getElementById("sendWaterTime").value = "1000-10-13";
-        document.getElementById("sendWaterCount").value = history.sendWaterCount;
-
-
-        document.url.action = "/history/updateHistory";
-    }
-
-    function formatDate(date) {
-        date = new Date(date); //转换成Data();
-        console.log(date);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? '0' + m : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        return y + '-' + m + '-' + d;
-    }
-</script>
 <div id="viewport">
     <!-- Sidebar -->
     <div th:include="component::sidebar">

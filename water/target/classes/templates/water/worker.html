@@ -5,112 +5,117 @@
     <title>送水公司后台管理系统</title>
 
     <div th:replace="component::link"></div>
+    <script th:inline="javascript">
+        function update(worker) {
+            console.log(worker)
+            document.getElementById("wid").value = worker.wid;
+            document.getElementById("workerName").value = worker.workerName;
+            document.getElementById("workerSalary").value = worker.workerSalary;
+            document.getElementById("workerMoney").value = worker.workerMoney;
+            document.getElementById("workerImage").value = worker.workerImage;
+            document.insertWorkerForm.action = "/worker/updateWorker";
+            // document.getElementById("#insertWorkerForm").action="/worker/updateWorker";
+        }
+
+        function insert() {
+            document.getElementById("wid").value = "";
+            document.getElementById("workerName").value = "";
+            document.getElementById("workerSalary").value = "";
+            document.getElementById("workerMoney").value = "";
+            document.getElementById("workerImage").value = "";
+            document.insertWorkerForm.action = "/worker/insertWorker"
+            // document.getElementById("#insertWorkerForm").action="/worker/insertWorker";
+        }
+
+        $(function () {
+            var options = {
+                success: function (data) {
+                    console.log(data)
+                    $("#workerImage").val(data);
+                    $("#prImage").val(data);
+                }
+            };
+            $("#form1").ajaxForm(options);
+        });
+
+        $(function(){
+            $("span[id=addSalary]").click(function () {
+                let wid = $(this).attr("class");
+                let workerSalary = $(this).next().text();
+                workerSalary = parseInt(workerSalary);
+                workerSalary += 100;
+                console.log(wid+"----"+workerSalary);
+                $(this).next().text(workerSalary);
+                // jQuery对AJAX的封装
+                $.ajax({
+                    // 提交给服务器的路径
+                    url:"/worker/adjustSalary",
+                    // 提交给服务器的数据
+                    data:{
+                        "wid":wid,
+                        "workerSalary":workerSalary},
+                    // 数据的提交方式
+                    method:"POST",
+                    // 请求成功后的回调函数
+                    success:function(data){
+                        if("success" == data) {
+                            toastr.success('工资调整成功');
+                            // alert("工资调整成功");
+                        } else {
+                            toastr.warning('工资调整失败');
+                            // alert("工资调整失败");
+                        }
+                    }
+                })
+            })
+
+            $("span[id=subSalary]").click(function () {
+                let wid = $(this).attr("class");
+                let workerSalary = $(this).prev().text();
+                workerSalary = parseInt(workerSalary);
+                console.log(wid+"---"+workerSalary);
+                workerSalary -= 100;
+                $(this).prev().text(workerSalary);
+                $.ajax({
+                    url:"/worker/adjustSalary",
+                    data:{
+                        "wid":wid,
+                        "workerSalary":workerSalary},
+                    method: "POST",
+                    success: function (data) {
+                        if('success' == data){
+                            toastr.success('工资调整成功');
+                            // alert("减工资成功");
+                        } else {
+                            toastr.warning('工资调整失败');
+                            alert("减工资失败");
+                        }
+                    }
+                })
+            })
+        })
+    </script>
 </head>
 <body>
-<script th:inline="javascript">
-    function update(worker) {
-        console.log(worker)
-        document.getElementById("wid").value = worker.wid;
-        document.getElementById("workerName").value = worker.workerName;
-        document.getElementById("workerSalary").value = worker.workerSalary;
-        document.getElementById("workerMoney").value = worker.workerMoney;
-        document.getElementById("workerImage").value = worker.workerImage;
-        document.insertWorkerForm.action = "/worker/updateWorker";
-        // document.getElementById("#insertWorkerForm").action="/worker/updateWorker";
-    }
-
-    function insert() {
-        document.getElementById("wid").value = "";
-        document.getElementById("workerName").value = "";
-        document.getElementById("workerSalary").value = "";
-        document.getElementById("workerMoney").value = "";
-        document.getElementById("workerImage").value = "";
-        document.insertWorkerForm.action = "/worker/insertWorker"
-        // document.getElementById("#insertWorkerForm").action="/worker/insertWorker";
-    }
-
-    $(function () {
-        var options = {
-            success: function (data) {
-                console.log(data)
-                $("#workerImage").val(data);
-                $("#prImage").val(data);
-            }
-        };
-        $("#form1").ajaxForm(options);
-    });
-
-    $(function(){
-        $("span[id=addSalary]").click(function () {
-            let wid = $(this).attr("class");
-            let workerSalary = $(this).next().text();
-            workerSalary = parseInt(workerSalary);
-            workerSalary += 100;
-            console.log(wid+"----"+workerSalary);
-            $(this).next().text(workerSalary);
-            // jQuery对AJAX的封装
-            $.ajax({
-                // 提交给服务器的路径
-                url:"/worker/adjustSalary",
-                // 提交给服务器的数据
-                data:{
-                    "wid":wid,
-                    "workerSalary":workerSalary},
-                // 数据的提交方式
-                method:"POST",
-                // 请求成功后的回调函数
-                success:function(data){
-                    if("success" == data) {
-                        toastr.success('工资调整成功');
-                        // alert("工资调整成功");
-                    } else {
-                        toastr.warning('工资调整失败');
-                        // alert("工资调整失败");
-                    }
-                }
-            })
-        })
-
-        $("span[id=subSalary]").click(function () {
-            let wid = $(this).attr("class");
-            let workerSalary = $(this).prev().text();
-            workerSalary = parseInt(workerSalary);
-            console.log(wid+"---"+workerSalary);
-            workerSalary -= 100;
-            $(this).prev().text(workerSalary);
-            $.ajax({
-                url:"/worker/adjustSalary",
-                data:{
-                    "wid":wid,
-                    "workerSalary":workerSalary},
-                method: "POST",
-                success: function (data) {
-                    if('success' == data){
-                        toastr.success('工资调整成功');
-                        // alert("减工资成功");
-                    } else {
-                        toastr.warning('工资调整失败');
-                        alert("减工资失败");
-                    }
-                }
-            })
-        })
-    })
-</script>
 <div id="viewport">
     <!-- Sidebar -->
     <div th:include="component::sidebar"></div>
     <!-- Content -->
     <div id="content">
+        <!--搜索框-->
         <div th:include="component::searchBar('/worker/searchWorkerPage',${searchName})"></div>
 
+        <!--登录用户显示-->
         <div th:replace="component::user"></div>
 
+        <!--添加按钮-->
         <div class="text-left">
             <button onclick="insert()" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
                 添加送水工
             </button>
         </div>
+
+        <!--表格主体-->
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -131,6 +136,7 @@
                             <td th:text="${worker.wid}"></td>
                             <td th:text="${worker.workerName}"></td>
                             <td>
+                                <!--动态增加工资-->
                                 <span id="addSalary"
                                       th:class="${worker.wid}">
                                     <span class="glyphicon glyphicon-plus" style="color: green" ></span>
@@ -141,7 +147,9 @@
                                     <span class="glyphicon glyphicon-minus" style="color: red" ></span>
                                 </span>
                             </td>
+
                             <td th:text="${worker.workerMoney}"></td>
+
                             <td>
                                 <img th:if="${#strings.isEmpty(worker.workerImage)}" style="width:80px;height:80px"
                                      src="../../images/user.png"/>
@@ -149,6 +157,8 @@
                                      th:src="@{${worker.workerImage}}"
                                      class="img-thumbnail">
                             </td>
+
+                            <!--更新删除按钮-->
                             <td>
                                 <div th:onclick="update([[${worker}]])" class="col-lg-3">
                                     <button class="btn btn-primary btn-sm glyphicon glyphicon-pencil"
@@ -167,6 +177,8 @@
                 </div>
             </div>
         </div>
+
+        <!--分页组件-->
         <div th:replace="component::pageComponent(${pageData},${pageInfo},'/worker/workerListPage','/worker/searchWorkerPage',${searchName},'')"></div>
     </div>
 </div>
@@ -228,7 +240,7 @@
                    </div>
                 </div>
             </div>
-        </div><!-- /.modal-content -->
+        </div>
     </div>
 </div>
 </body>
