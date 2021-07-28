@@ -85,7 +85,7 @@
     </div>
     <!-- Content -->
     <div class="content">
-        <div th:replace="component::searchBarTime('/history/searchHistory')"/>
+        <div th:replace="component::searchBarTime('/history/searchHistoryPage',${searchName},${searchName2})"/>
         <div th:replace="component::user"></div>
 
         <div class="text-left">
@@ -133,6 +133,7 @@
                 </div>
             </div>
         </div>
+        <div th:replace="component::pageComponent(${pageData},${pageInfo},'/history/historyListPage','/history/searchHistoryPage',${searchName},${searchName2})"></div>
     </div>
 </div>
 

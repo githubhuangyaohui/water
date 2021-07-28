@@ -1,5 +1,7 @@
 package com.whut.water.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Worker;
 import com.whut.water.mapper.WorkerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,24 @@ public class WorkerServiceImpl implements WorkerService {
     public List<Worker> searchWorker(String worker) {
         return workerMapper.searchWorker(worker);
     }
+
+    @Override
+    public PageInfo<Worker> listWorkerForPage(Integer pageNum) {
+        PageHelper.startPage(pageNum,PAGE_SiZE_WORKER);
+        List<Worker> workers = workerMapper.listWorker();
+        PageInfo<Worker> workerPageInfo = new PageInfo<>(workers);
+        return workerPageInfo;
+    }
+
+    @Override
+    public PageInfo<Worker> searchWorker(Integer pageNum, String searchName) {
+        PageHelper.startPage(pageNum,PAGE_SiZE_WORKER);
+        List<Worker> workers = workerMapper.searchWorker(searchName);
+        PageInfo<Worker> workerPageInfo = new PageInfo<>(workers);
+        return workerPageInfo;
+    }
+
+
 
     @Override
     public int deleteWorker(Integer wid) {

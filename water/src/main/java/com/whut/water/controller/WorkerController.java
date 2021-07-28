@@ -1,20 +1,20 @@
 package com.whut.water.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Worker;
 import com.whut.water.service.WorkerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("/worker")
 public class WorkerController {
@@ -43,6 +43,51 @@ public class WorkerController {
         model.addAttribute("workerList",workers);
         return "worker";
     }
+
+    @RequestMapping("/workerListPage")
+    public String listWorkerForPage(
+            @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum, Model model) {
+        // 调用业务逻辑层，获取分页数据
+        PageInfo<Worker> pageInfo = workerService.listWorkerForPage(pageNum);
+        // 获取当前页的员工列表
+        List<Worker> workerList = pageInfo.getList();
+        // 客户列表、分页对象传入前端页面
+        model.addAttribute("workerList",workerList);
+        model.addAttribute("pageInfo",pageInfo);
+        // 表示普通的分页查询，不是根据条件搜索
+        model.addAttribute("pageData","listData");
+        return "worker";
+    }
+
+    /**
+     * 搜索分页
+     * @param searchName
+     * @param model
+     * @return
+     */
+    @RequestMapping("/searchWorkerPage")
+    public String searchWorkerPage(
+            String searchName,
+            @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
+            Model model) {
+        if(log.isInfoEnabled()) {
+            log.info("searchWorker name = "+ searchName);
+        }
+        PageInfo<Worker> pageInfo = workerService.searchWorker(pageNum,searchName);
+        // 数据传入到前端
+        model.addAttribute("workerList",pageInfo.getList());
+        model.addAttribute("pageInfo",pageInfo);
+        // 按条件搜索分页查询
+        model.addAttribute("pageData","searchData");
+        model.addAttribute("searchName",searchName);
+        // 跳转到客户列表页面
+        return "worker";
+    }
+
+
+
+
+
 
     @RequestMapping(value = "/updateWorker",method = RequestMethod.POST)
     public String updateWorker(Worker worker){

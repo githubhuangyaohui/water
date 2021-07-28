@@ -15,11 +15,18 @@
         document.getElementById("workerSalary").value = worker.workerSalary;
         document.getElementById("workerMoney").value = worker.workerMoney;
         document.getElementById("workerImage").value = worker.workerImage;
-        document.url.action = "/worker/updateWorker";
+        // document.insertWorkerForm.action = "/worker/updateWorker";
+        document.getElementById("#insertWorkerForm").action="/worker/updateWorker";
     }
 
     function insert() {
-        document.url.action = "/worker/insertWorker"
+        document.getElementById("wid").value = "";
+        document.getElementById("workerName").value = "";
+        document.getElementById("workerSalary").value = "";
+        document.getElementById("workerMoney").value = "";
+        document.getElementById("workerImage").value = "";
+        // document.insertWorkerForm.action = "/worker/insertWorker"
+        document.getElementById("#insertWorkerForm").action="/worker/insertWorker";
     }
 
     $(function () {
@@ -95,7 +102,8 @@
     <div th:include="component::sidebar"></div>
     <!-- Content -->
     <div id="content">
-        <div th:include="component::searchBar('/worker/searchWorker',${searchName})"></div>
+        <div th:include="component::searchBar('/worker/searchWorkerPage',${searchName})"></div>
+
         <div th:replace="component::user"></div>
 
         <div class="text-left">
@@ -159,14 +167,16 @@
                 </div>
             </div>
         </div>
+        <div th:replace="component::pageComponent(${pageData},${pageInfo},'/worker/workerListPage','/worker/searchWorkerPage',${searchName},'')"></div>
     </div>
 </div>
+
 <!-- 模态框（添加/修改） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div>
         <div class="modal-dialog">
             <div class="modal-content" style="height: 350px">
-                <form th:action="@{/worker/insertWorker}" method="post" name="url">
+                <form th:action="@{/worker/insertWorker}" method="post" name="insertWorkerForm" id="insertWorkerForm">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                             &times;

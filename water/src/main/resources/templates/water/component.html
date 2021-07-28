@@ -34,17 +34,17 @@
         </header>
         <ul class="nav">
             <li>
-                <a href="/customer/custListPage">
+                <a href="/customer/customerListPage">
                     <i class="glyphicon glyphicon-asterisk"></i> 客户管理
                 </a>
             </li>
             <li>
-                <a href="/worker/listWorker">
+                <a href="/worker/workerListPage">
                     <i class="glyphicon glyphicon-user"></i> 送水工管理
                 </a>
             </li>
             <li>
-                <a href="/history/listHistory">
+                <a href="/history/historyListPage">
                     <i class="glyphicon glyphicon-time"></i> 送水记录管理
                 </a>
             </li>
@@ -215,19 +215,19 @@
 </div>
 
 <!--searchBarTime: 起止日期搜索组件-->
-<div th:fragment="searchBarTime(searchUrl)">
+<div th:fragment="searchBarTime(searchUrl,searchName,searchName2)">
     <!--/*@thymesVar id="searchUrl" type="java.lang.String"*/-->
     <form th:action="@{${searchUrl}}" th:method="post">
         <div class="col-lg-7" style="width: 56%;margin-left: 30%;margin-top: 10px;float: left">
             <div class="row">
                 <div class="col-lg-3">
                     <div class="input-group">
-                        <input class="form-control" type="date" name="start" value="2020-01-01">
+                        <input class="form-control" type="date" name="searchName" th:value="${#strings.isEmpty(searchName) ? '2000-01-01': searchName}">
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="input-group">
-                        <input class="form-control" type="date" name="end" value="2021-12-30">
+                        <input class="form-control" type="date" name="searchName2" th:value="${#strings.isEmpty(searchName2) ? '2021-12-30': searchName2}">
                     </div>
                 </div>
                 <span class="col-lg-2">
@@ -253,6 +253,71 @@
             </ul>
         </div>
     </nav>
+</div>
+<!--分页组件复用-->
+<div th:fragment="pageComponent(pageData,pageInfo,listPageUrl,searchPageUrl,searchName,searchName2)">
+    <div class="col-md-12">
+        <!--/*@thymesVar id="pageData" type="PageData"*/-->
+        <div th:switch="${pageData}" class="modal-footer no-margin-top" >
+            <div class="col-md-6">
+                当前第 [[${pageInfo.pageNum}]]页,共 [[${pageInfo.pages}]] 页.一共 [[${pageInfo.total}]] 条记录
+            </div>
+
+            <ul th:case="'listData'" class="pagination pull-right no-margin">
+                <li th:if="${pageInfo.hasPreviousPage}">
+                    <a th:href="${listPageUrl}+'?pageNum=1'">首页</a>
+                </li>
+
+                <li class="prev" th:if="${pageInfo.hasPreviousPage}">
+                    <a th:href="${listPageUrl}+'?pageNum='+${pageInfo.prePage}">
+                        <i class="ace-icon fa fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <!--遍历条数-->
+                <li th:each="nav:${pageInfo.navigatepageNums}">
+                    <a th:href="${listPageUrl}+'?pageNum='+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
+                    <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}" th:text="${nav}" ></span>
+                </li>
+
+                <li class="next" th:if="${pageInfo.hasNextPage}">
+                    <a th:href="${listPageUrl}+'?pageNum='+${pageInfo.nextPage}">
+                        <i class="ace-icon fa fa-angle-double-right"></i>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="${listPageUrl}+'?pageNum='+${pageInfo.pages}">尾页</a>
+                </li>
+            </ul>
+
+            <ul th:case="'searchData'" class="pagination pull-right no-margin">
+                <li th:if="${pageInfo.hasPreviousPage}">
+                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum=1'">首页</a>
+                </li>
+
+                <li class="prev" th:if="${pageInfo.hasPreviousPage}">
+                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum='+${pageInfo.prePage}">
+                        <i class="ace-icon fa fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <!--遍历条数-->
+                <li th:each="nav:${pageInfo.navigatepageNums}">
+                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum='+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
+                    <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}" th:text="${nav}" ></span>
+                </li>
+
+                <li class="next" th:if="${pageInfo.hasNextPage}">
+                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum='+${pageInfo.nextPage}">
+                        <i class="ace-icon fa fa-angle-double-right"></i>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="${searchPageUrl}+'?searchName='+${searchName}+'&searchName2='+${searchName2}+'&pageNum='+${pageInfo.pages}">尾页</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 </body>
 </html>

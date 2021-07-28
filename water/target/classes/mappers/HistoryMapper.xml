@@ -67,9 +67,11 @@
     <select id="getSalary" resultMap="salaryMap">
         SELECT worker.`wid`,worker.`worker_name`,worker.`worker_salary`,worker.`worker_money`,SUM(IFNULL(history.`send_water_count`,0)) AS send_water_count_sum
         FROM worker
-        LEFT JOIN history ON worker.`wid`=history.`worker_id`
-        WHERE history.`send_water_time`>= #{start}
-        AND history.`send_water_time` &lt;= #{end}
+        LEFT JOIN (
+        SELECT *  FROM history WHERE history.`send_water_time`
+        BETWEEN #{start} AND #{end}
+        ) as history
+        ON worker.`wid`=history.`worker_id`
         OR ISNULL(history.`send_water_time`)
         GROUP BY worker.`wid`
     </select>

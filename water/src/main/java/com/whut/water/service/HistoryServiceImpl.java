@@ -1,14 +1,14 @@
 package com.whut.water.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Customer;
 import com.whut.water.entities.History;
 import com.whut.water.entities.Worker;
 import com.whut.water.mapper.HistoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +26,22 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public List<History> searchHistory(String start, String end) {
         return historyMapper.searchHistory(start,end);
+    }
+
+    @Override
+    public PageInfo<History> listHistoryForPage(Integer pageNum) {
+        PageHelper.startPage(pageNum,PAGE_SiZE_HISTORY);
+        List<History> histories = historyMapper.listHistory();
+        PageInfo<History> historyPageInfo = new PageInfo<>(histories);
+        return historyPageInfo;
+    }
+
+    @Override
+    public PageInfo<History> searchHistory(Integer pageNum, String start, String end) {
+        PageHelper.startPage(pageNum,PAGE_SiZE_HISTORY);
+        List<History> histories = historyMapper.searchHistory(start,end);
+        PageInfo<History> historyPageInfo = new PageInfo<>(histories);
+        return historyPageInfo;
     }
 
     @Override

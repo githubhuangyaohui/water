@@ -1,5 +1,6 @@
 package com.whut.water.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Customer;
 import com.whut.water.entities.History;
 import com.whut.water.entities.Worker;
@@ -10,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -65,6 +63,53 @@ public class HistoryController {
         model.addAttribute("historyList",histories);
         return "history";
     }
+
+
+    @RequestMapping("/historyListPage")
+    public String historyListPage(
+            @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum, Model model) {
+        // 调用业务逻辑层，获取分页数据
+        PageInfo<History> pageInfo = historyService.listHistoryForPage(pageNum);
+        // 获取当前页的历史列表
+        List<History> historyList = pageInfo.getList();
+        // 客户列表、分页对象传入前端页面
+        model.addAttribute("historyList",historyList);
+        model.addAttribute("pageInfo",pageInfo);
+        // 表示普通的分页查询，不是根据条件搜索
+        model.addAttribute("pageData","listData");
+        return "history";
+    }
+
+    /**
+     * 搜索分页
+     * @param searchName
+     * @param model
+     * @return
+     */
+    @RequestMapping("/searchHistoryPage")
+    public String searchCustomer(
+            String searchName,
+            String searchName2,
+            @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
+            Model model) {
+        if(log.isInfoEnabled()) {
+            log.info("searchHistory name = "+ searchName+":"+searchName2);
+        }
+        PageInfo<History> historyPageInfo = historyService.searchHistory(pageNum, searchName, searchName2);
+        // 数据传入到前端
+        model.addAttribute("historyList",historyPageInfo.getList());
+        model.addAttribute("pageInfo",historyPageInfo);
+        // 按条件搜索分页查询
+        model.addAttribute("pageData","searchData");
+        model.addAttribute("searchName",searchName);
+        model.addAttribute("searchName2",searchName2);
+        // 跳转到客户列表页面
+        return "history";
+    }
+
+
+
+
     /**
      * 根据日期统计薪水
      * @param start

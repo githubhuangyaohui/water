@@ -30,7 +30,7 @@
     </div>
     <!-- Content -->
     <div id="content">
-        <div th:include="component::searchBar('/customer/searchCustomer',${searchName})"></div>
+        <div th:include="component::searchBar('/customer/searchCustomerPage',${searchName})"></div>
         <div th:replace="component::user"></div>
 
         <div class="text-left">
@@ -77,68 +77,8 @@
                     </table>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div th:switch="${pageData}" class="modal-footer no-margin-top" >
-                    <div class="col-md-6">
-                        当前第 [[${pageInfo.pageNum}]]页,共 [[${pageInfo.pages}]] 页.一共 [[${pageInfo.total}]] 条记录
-                    </div>
-
-                    <ul th:case="'listCustomer'" class="pagination pull-right no-margin">
-                        <li th:if="${pageInfo.hasPreviousPage}">
-                            <a th:href="'/customer/custListPage?pageNum=1'">首页</a>
-                        </li>
-
-                        <li class="prev" th:if="${pageInfo.hasPreviousPage}">
-                            <a th:href="'/customer/custListPage?pageNum='+${pageInfo.prePage}">
-                                <i class="ace-icon fa fa-angle-double-left"></i>
-                            </a>
-                        </li>
-                        <!--遍历条数-->
-                        <li th:each="nav:${pageInfo.navigatepageNums}">
-                            <a th:href="'/customer/custListPage?pageNum='+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
-                            <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}" th:text="${nav}" ></span>
-                        </li>
-
-                        <li class="next" th:if="${pageInfo.hasNextPage}">
-                            <a th:href="'/customer/custListPage?pageNum='+${pageInfo.nextPage}">
-                                <i class="ace-icon fa fa-angle-double-right"></i>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a th:href="'/customer/custListPage?pageNum='+${pageInfo.pages}">尾页</a>
-                        </li>
-                    </ul>
-
-                    <ul th:case="'searchData'" class="pagination pull-right no-margin">
-                        <li th:if="${pageInfo.hasPreviousPage}">
-                            <a th:href="'/customer/searchCust?custName='+${data}+'&pageNum=1'">首页</a>
-                        </li>
-
-                        <li class="prev" th:if="${pageInfo.hasPreviousPage}">
-                            <a th:href="'/customer/searchCust?custName='+${data}+'&pageNum='+${pageInfo.prePage}">
-                                <i class="ace-icon fa fa-angle-double-left"></i>
-                            </a>
-                        </li>
-                        <!--遍历条数-->
-                        <li th:each="nav:${pageInfo.navigatepageNums}">
-                            <a th:href="'/customer/searchCust?custName='+${data}+'&pageNum='+${nav}" th:text="${nav}" th:if="${nav != pageInfo.pageNum}"></a>
-                            <span style="font-weight: bold;background: #6faed9;" th:if="${nav == pageInfo.pageNum}" th:text="${nav}" ></span>
-                        </li>
-
-                        <li class="next" th:if="${pageInfo.hasNextPage}">
-                            <a th:href="'/customer/searchCust?custName='+${data}+'&pageNum='+${pageInfo.nextPage}">
-                                <i class="ace-icon fa fa-angle-double-right"></i>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a th:href="'/customer/searchCust?custName='+${data}+'&pageNum='+${pageInfo.pages}">尾页</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
+        <div th:replace="component::pageComponent(${pageData},${pageInfo},'/customer/customerListPage','/customer/searchCustomerPage',${searchName},'')"></div>
     </div>
 </div>
 <!-- 模态框（添加） -->

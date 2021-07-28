@@ -37,7 +37,7 @@ public class CustomerController {
         return "custList";
     }
 
-    @RequestMapping("/custListPage")
+    @RequestMapping("/customerListPage")
     public String listCustomerForPage(
             @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum, Model model) {
         // 调用业务逻辑层，获取分页数据
@@ -48,7 +48,7 @@ public class CustomerController {
         model.addAttribute("customerList",custList);
         model.addAttribute("pageInfo",pageInfo);
         // 表示普通的分页查询，不是根据条件搜索
-        model.addAttribute("pageData","listCustomer");
+        model.addAttribute("pageData","listData");
         return "customer";
     }
 
@@ -59,25 +59,25 @@ public class CustomerController {
      * 2 转
      *   将搜索的客户列表返回给前端(数据共享)
      *   跳转到客户列表页面
-     * @param custName
+     * @param searchName
      * @param model
      * @return
      */
-    @RequestMapping("/searchCust")
+    @RequestMapping("/searchCustomerPage")
     public String searchCustomer(
-            String custName,
+            String searchName,
             @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
             Model model) {
         if(log.isInfoEnabled()) {
-            log.info("searchCustomer name = "+ custName);
+            log.info("searchCustomer name = "+ searchName);
         }
-        PageInfo<Customer> pageInfo = customerService.searchCustomer(pageNum,custName);
+        PageInfo<Customer> pageInfo = customerService.searchCustomer(pageNum,searchName);
         // 数据传入到前端
         model.addAttribute("customerList",pageInfo.getList());
         model.addAttribute("pageInfo",pageInfo);
         // 按条件搜索分页查询
         model.addAttribute("pageData","searchData");
-        model.addAttribute("data",custName);
+        model.addAttribute("searchName",searchName);
 
         // 跳转到客户列表页面
         return "customer";
