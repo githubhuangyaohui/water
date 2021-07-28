@@ -92,17 +92,17 @@ public class WorkerController {
     @RequestMapping(value = "/updateWorker",method = RequestMethod.POST)
     public String updateWorker(Worker worker){
         int i = workerService.updateWorker(worker);
-        return "redirect:/worker/listWorker";
+        return "redirect:/worker/workerListPage";
     }
     @RequestMapping(value = "/insertWorker",method = RequestMethod.POST)
     public String insertWorker(Worker worker){
         int i = workerService.insertWorker(worker);
-        return "redirect:/worker/listWorker";
+        return "redirect:/worker/workerListPage";
     }
     @RequestMapping("/deleteWorker/{wid}")
     public String deleteWorker(@PathVariable("wid")Integer wid){
         int i = workerService.deleteWorker(wid);
-        return "redirect:/worker/listWorker";
+        return "redirect:/worker/workerListPage";
     }
 
     /**

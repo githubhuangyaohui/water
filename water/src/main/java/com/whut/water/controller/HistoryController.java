@@ -152,7 +152,7 @@ public class HistoryController {
     @RequestMapping("/deleteHistory/{hid}")
     public String deleteCustomer(@PathVariable("hid")Integer hid){
         int i = historyService.deleteHistory(hid);
-        return "redirect:/history/listHistory";
+        return "redirect:/history/historyListPage";
     }
 
     /**
@@ -173,7 +173,7 @@ public class HistoryController {
 //        if (log.isInfoEnabled()) {
 //            log.info("update history rows = "+rows);
 //        }
-        return "redirect:/history/listHistory";
+        return "redirect:/history/historyListPage";
     }
 
     @RequestMapping(value = "/insertHistory",method = RequestMethod.POST)
@@ -187,7 +187,7 @@ public class HistoryController {
 //        if (log.isInfoEnabled()) {
 //            log.info("insert history rows = "+rows);
 //        }
-        return "redirect:/history/listHistory";
+        return "redirect:/history/historyListPage";
     }
 
     @ResponseBody

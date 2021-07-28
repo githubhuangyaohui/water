@@ -90,7 +90,7 @@ public class CustomerController {
     @RequestMapping(value = "/updateCustomer",method = RequestMethod.POST)
     public String updateCustomer(Customer customer){
         int i = customerService.updateCustomer(customer);
-        return "redirect:/customer/listCustomer";
+        return "redirect:/customer/customerListPage";
     }
 
     /**
@@ -101,7 +101,7 @@ public class CustomerController {
     @RequestMapping(value = "/insertCustomer",method = RequestMethod.POST)
     public String insertCustomer(Customer customer){
         int i = customerService.insertCustomer(customer);
-        return "redirect:/customer/listCustomer";
+        return "redirect:/customer/customerListPage";
     }
 
 
@@ -113,6 +113,6 @@ public class CustomerController {
     @RequestMapping("/deleteCustomer/{cid}")
     public String deleteCustomer(@PathVariable("cid")Integer cid){
         int i = customerService.deleteCustomer(cid);
-        return "redirect:/customer/listCustomer";
+        return "redirect:/customer/customerListPage";
     }
 }
