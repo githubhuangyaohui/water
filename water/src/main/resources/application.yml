@@ -7,15 +7,38 @@ spring:
     name: water-8080
   # 数据源配置信息
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/water?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
     druid:
-      max-active: 10
-      min-idle: 5
-      max-wait: 3000
+      # 配置初始化大小、最小、最大线程数
+      initialSize: 5
+      minIdle: 5
+      # 最大连接数通常是CPU核数+1，也可以大些但不要超过20，数据库加锁时连接过多性能下降
+      maxActive: 20
+      # 最大等待时间
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      # 空闲时间，单位是毫秒。连接空闲时间大于该值并且池中空闲连接大于minIdle则关闭该连接
+      minEvictableIdleTimeMillis: 300000
+      #测试连接是否可用的SQL语句，SELECT 1是MySQL的默认值
+      validationQuery: SELECT 1
+      # 应用向连接池获取连接的时候测试连接的有效性
+      testWhileIdle: true
+      testOnBorrow: false
+      # 设置从连接池归还连接时是否检查连接有效性，true检查，false不检查
+      testOnReturn: false
+      # 开启PreparedStatements Cache(提升写入、查询效率)，MySQL5.7以上建议true
+      poolPreparedStatements: true
+      # 打开Druid的监控统计功能
+      # stat监控统计  log4j日志监控  wall防御sql注入
+      filters: stat,wall,log4j
+      maxPoolPreparedStatementPerConnectionSize: 20
+      useGlobalDataSourceStat: true
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
   mvc:
     format:
       date: yyyy-MM-dd

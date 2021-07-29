@@ -11,6 +11,11 @@
 
     <artifactId>water</artifactId>
     <dependencies>
+        <!-- 增加log4j依赖-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.github.pagehelper</groupId>
