@@ -10,11 +10,13 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/","/login",
-                        "/**/*.js",                  //js静态资源
-                        "/**/*.css",                  //css静态资源
-                        "/**/*.png",                  //js静态资源
-                        "/**/*.jpg"                   //js静态资源
+                .excludePathPatterns(
+                        "/",
+                        "/login",
+                        "/css/**",
+                        "/js/**",
+                        "/fonts/**",
+                        "/images/**"
                 );
     }
 }
