@@ -10,6 +10,7 @@ import com.whut.water.service.WorkerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -196,14 +197,30 @@ public class HistoryController {
         return "forward:/history/historyListPage";
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @RequestMapping(value = "/insertHistory",method = RequestMethod.POST)
     public String insertHistory(History history,Integer custId,Integer workerId,Model model) {
-        int i = historyService.insertHistory(history,custId,workerId);
-        if(i>0){
-            model.addAttribute("successMassage","添加成功");
+        // 判断用户是否有足够的水票
+        Customer customerByCid = customerService.getCustomerByCid(custId);
+        Integer custTicket = customerByCid.getCustTicket();
+        Integer sendWaterCount = history.getSendWaterCount();
+        if(custTicket>=sendWaterCount){
+            // 水票充足
+            //更新客户水票信息
+            customerByCid.setCustTicket(custTicket-sendWaterCount);
+            customerService.updateCustomer(customerByCid);
+            //插入历史记录
+            int i = historyService.insertHistory(history,custId,workerId);
+            if(i>0){
+                model.addAttribute("successMassage","添加成功");
+            }else{
+                model.addAttribute("warningMassage","添加失败");
+            }
         }else{
-            model.addAttribute("warningMassage","添加失败");
+            // 水票不足
+            model.addAttribute("warningMassage","客户水票不足");
         }
+
         return "forward:/history/historyListPage";
     }
 

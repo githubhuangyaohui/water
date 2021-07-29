@@ -10,6 +10,7 @@ public interface CustomerService {
 
     List<Customer> listCustomer();
     List<Customer> searchCustomer(String customerName);
+    Customer getCustomerByCid(Integer cid);
     int deleteCustomer(Integer cid);
     int insertCustomer(Customer customer);
     int updateCustomer(Customer customer);

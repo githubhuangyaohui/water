@@ -26,6 +26,11 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.searchCustomer(customerName);
     }
 
+    @Override
+    public Customer getCustomerByCid(Integer cid) {
+        return customerMapper.getCustomerByCid(cid);
+    }
+
     @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int deleteCustomer(Integer cid) {

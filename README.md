@@ -75,6 +75,158 @@
 
 
 
+
+
+## 需求实现
+
+
+
+1. 某客户手里还有几张水票
+```text
+客户管理界面分页显示全部客户列表包含水票信息
+上方搜索栏可以根据客户名称实现模糊搜索
+```
+搜索sql如下：
+```xml
+    <select id="searchCustomer" resultType="com.whut.water.entities.Customer">
+        select cid,cust_name,cust_mobile,cust_address,cust_ticket
+        from customer
+        where 1 = 1
+        <if test="customerName != null and customerName != ''">
+            and cust_name like concat('%',#{customerName},'%')
+        </if>
+    </select>
+```
+
+
+2. 某送水工送了多少桶水
+
+```text
+ 在统计送水工数量界面显示统计每个送水工送水的信息的统计
+ 包含送水客户和送水总数
+ 可根据用户名模糊查询
+```
+
+搜索sql如下：
+```xml
+    <select id="searchWorkerMassage" resultMap="workerMassageMap">
+        select w.wid , w.worker_name,
+        ifnull(group_concat(distinct c.cust_name),'-') as customer_list,
+        ifnull(sum(h.send_water_count),0) as send_water_count_sum
+        from worker w left join history h on w.wid = h.worker_id left join customer c on c.cid = h.cust_id
+        WHERE w.`worker_name` LIKE CONCAT('%',#{searchName},'%')
+        group by w.wid
+        order by send_water_count_sum desc;
+    </select>
+```
+
+
+3. 某送水应得得工资
+4. 统计没有送水的送水工的信息
+
+```text
+这两个需求可以使用一条sql解决：
+	统计工资和没有送水的的送水工信息都要在一定的时间区间内才有意义
+	worker表和history表外连接查询
+	先查出时间段内记录，再连接worker既可以完成
+```
+
+```xml
+    <select id="getSalary" resultMap="salaryMap">
+        SELECT 	worker.`wid`,worker.`worker_name`,worker.`worker_salary`,worker.`worker_money`,
+        		SUM(IFNULL(history.`send_water_count`,0)) AS send_water_count_sum
+        FROM worker
+        LEFT JOIN (	 SELECT *  FROM history WHERE history.`send_water_time`
+        			BETWEEN #{start} AND #{end}) as history
+        	ON worker.`wid`=history.`worker_id` OR ISNULL(history.`send_water_time`)
+        GROUP BY worker.`wid`
+        order by send_water_count_sum desc
+    </select>
+```
+
+```text
+查处的数据在前端使用js计算,然后渲染到表格中
+```
+
+```js
+var str = '';
+//对数据做遍历，拼接到页面显示
+for (var index in data) {
+             str += '<tr>'
+                 + '<td>' + data[index].wid + '</td>'
+                 + '<td>' + data[index].workerName + '</td>'
+                 + '<td>' + data[index].workerSalary + '</td>'
+                 + '<td>' + data[index].workerMoney + '</td>'
+                 + '<td>' + data[index].sendWaterCountSum + '</td>'
+  + '<td>' + Math.round(data[index].workerSalary+data[index].workerMoney*data[index].sendWaterCountSum) + '</td>'
+                  + '</tr>'
+                            }
+                 //放入页面的容器显示
+                 $('#salaryTableBody').html(str);
+```
+
+
+
+5. 某送水工在某年某月某日为某客户送了多少通水
+
+```text
+可以在历史记录页面根据上方搜索框定位到某一天查询那天的数据，可以找到某年某月某日为某客户送了多少通水
+实现见代码
+```
+
+6. 统计购买了水票没有送水的客户
+
+```text
+统计的显示意义不大，没有实现
+```
+
+
+
+7. 送水工人送了多少通水，就要减去对应的客户水票
+8. 送水总数不能大于购买的水票
+
+```text
+只要在插入历史记录之前判断要送的水的数量，是否大于用户的水票数量
+	如果大于，不能插入失败，修改客户水票数量就可以
+	如果不大于更新客户水票数量，插入数据就可以完成上面两条需求了
+```
+关键实现判断代码：
+```java
+ @Transactional(rollbackFor = {Exception.class,Error.class})
+    @RequestMapping(value = "/insertHistory",method = RequestMethod.POST)
+    public String insertHistory(History history,Integer custId,Integer workerId,Model model) {
+        // 判断用户是否有足够的水票
+        Customer customerByCid = customerService.getCustomerByCid(custId);
+        Integer custTicket = customerByCid.getCustTicket();
+        Integer sendWaterCount = history.getSendWaterCount();
+        if(custTicket>=sendWaterCount){
+            // 水票充足
+            //更新客户水票信息
+            customerByCid.setCustTicket(custTicket-sendWaterCount);
+            customerService.updateCustomer(customerByCid);
+            //插入历史记录
+            int i = historyService.insertHistory(history,custId,workerId);
+            if(i>0){
+                model.addAttribute("successMassage","添加成功");
+            }else{
+                model.addAttribute("warningMassage","添加失败");
+            }
+        }else{
+            // 水票不足
+            model.addAttribute("warningMassage","客户水票不足");
+        }
+        return "forward:/history/historyListPage";
+    }
+```
+
+
+
+
+
+
+
+
+
 ## 数据库表
 - 管理账户表
 ~~~sql

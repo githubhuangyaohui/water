@@ -19,6 +19,7 @@ public interface CustomerMapper {
      */
     List<Customer> listCustomer();
     List<Customer> searchCustomer(@Param("customerName") String customerName);
+    Customer getCustomerByCid(@Param("cid") Integer cid);
     int updateCustomer(@Param("customer") Customer customer);
     int deleteCustomer(@Param("cid") Integer cid);
     int insertCustomer(@Param("customer") Customer customer);

@@ -9,6 +9,12 @@
         from customer
     </select>
 
+    <select id="getCustomerByCid" resultType="com.whut.water.entities.Customer">
+        select cid,cust_name,cust_mobile,cust_address,cust_ticket
+        from customer
+        where cid=#{cid}
+    </select>
+
     <select id="searchCustomer" resultType="com.whut.water.entities.Customer">
         select cid,cust_name,cust_mobile,cust_address,cust_ticket
         from customer
