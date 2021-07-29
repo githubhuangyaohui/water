@@ -73,7 +73,8 @@
 8. 修改密码
 ![pwd](./mdPic/pwd.png)
 
-
+9. 新增登录拦截和登出功能
+![logout](./mdPic/logout.png)
 
 
 
