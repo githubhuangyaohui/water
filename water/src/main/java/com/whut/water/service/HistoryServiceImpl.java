@@ -9,6 +9,7 @@ import com.whut.water.entities.Worker;
 import com.whut.water.mapper.HistoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +47,13 @@ public class HistoryServiceImpl implements HistoryService {
         return historyPageInfo;
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int deleteHistory(Integer hid) {
         return historyMapper.deleteHistory(hid);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int deleteHistoryBatch(String hidList) {
 
@@ -81,6 +84,7 @@ public class HistoryServiceImpl implements HistoryService {
         return historyMapper.getHistoryByCId(cid).size()>0?true:false;
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int updateHistory(History history,Integer custId,Integer workerId) {
         Customer customer = new Customer();
@@ -94,6 +98,7 @@ public class HistoryServiceImpl implements HistoryService {
         return historyMapper.updateHistory(history);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int insertHistory(History history, Integer custId, Integer workerId) {
         Customer customer = new Customer();

@@ -6,6 +6,7 @@ import com.whut.water.entities.Worker;
 import com.whut.water.mapper.WorkerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -43,22 +44,25 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
 
-
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int deleteWorker(Integer wid) {
         return workerMapper.deleteWorker(wid);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int insertWorker(Worker worker) {
         return workerMapper.insertWorker(worker);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int updateWorker(Worker worker) {
         return workerMapper.updateWorker(worker);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int adjustSalary(Integer wid, Integer workerSalary) {
         return workerMapper.adjustSalary(wid,workerSalary);

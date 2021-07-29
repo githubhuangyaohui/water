@@ -27,9 +27,18 @@
   - thymeleaf
 - UI组件
   - Bootstrap
+  - 插件：
+    - toastr: 非阻塞消息通知插件
+    - echarts: 图表可视化显示
 - 数据库
   - mysql
   
+  
+
+## 项目结构
+
+![项目结构](/mdPic/sys.png)
+
 ## 数据库表
 - 管理账户表
 ~~~sql

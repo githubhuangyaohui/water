@@ -5,9 +5,11 @@ import com.whut.water.mapper.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.Objects;
+
 
 @Slf4j
 @Service
@@ -36,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
         return false;
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public boolean changePwd(String userName, String nowPwd) {
         String oldMd5 = DigestUtils.md5DigestAsHex(nowPwd.getBytes());

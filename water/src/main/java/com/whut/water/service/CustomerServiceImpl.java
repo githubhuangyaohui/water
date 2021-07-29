@@ -6,6 +6,7 @@ import com.whut.water.entities.Customer;
 import com.whut.water.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,16 +26,19 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.searchCustomer(customerName);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int deleteCustomer(Integer cid) {
         return customerMapper.deleteCustomer(cid);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int insertCustomer(Customer customer) {
         return customerMapper.insertCustomer(customer);
     }
 
+    @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int updateCustomer(Customer customer) {
         return customerMapper.updateCustomer(customer);
