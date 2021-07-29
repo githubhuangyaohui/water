@@ -31,6 +31,13 @@ public class AccountController {
         }
     }
 
+    @RequestMapping(value = "/logout",method = RequestMethod.GET)
+    public String logout(String userName, Model model, HttpSession session) {
+            session.setAttribute("userName","");
+            model.addAttribute("successMassage","登出成功");
+            return "index";
+    }
+
     @ResponseBody
     @RequestMapping(value = "/preChangePwd",method = RequestMethod.POST)
     public boolean preChangePwd(String oldPwd ,HttpSession session) {
