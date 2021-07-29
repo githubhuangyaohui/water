@@ -90,6 +90,7 @@
         ON worker.`wid`=history.`worker_id`
         OR ISNULL(history.`send_water_time`)
         GROUP BY worker.`wid`
+        order by send_water_count_sum desc
     </select>
 
 
