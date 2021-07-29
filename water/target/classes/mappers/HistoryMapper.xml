@@ -53,6 +53,13 @@
         delete from history where hid=#{hid}
     </delete>
 
+    <delete id="deleteHistoryBatch" parameterType="list">
+        delete from history where hid in
+        <foreach collection="hidList" item="hid" open="(" close=")" separator=",">
+            #{hid}
+        </foreach>
+    </delete>
+
     <update id="updateHistory" parameterType="com.whut.water.entities.History">
         update history
         set cust_id = #{history.customer.cid} , worker_id = #{history.worker.wid}

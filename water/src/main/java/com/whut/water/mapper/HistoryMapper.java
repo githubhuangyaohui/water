@@ -21,7 +21,10 @@ public interface HistoryMapper {
 
     List<History> searchHistory(@Param("start")String start,@Param("end") String end);
     int updateHistory(@Param("history") History history);
+
     int deleteHistory(@Param("hid") Integer hid);
+    int deleteHistoryBatch(@Param("hidList") List hidList);
+
     int insertHistory(@Param("history") History history);
     List<Map> getSalary(@Param("start") String start ,@Param("end") String end);
     List<Map> getCount();

@@ -1,5 +1,6 @@
 package com.whut.water.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.whut.water.entities.Customer;
@@ -9,6 +10,7 @@ import com.whut.water.mapper.HistoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +49,21 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public int deleteHistory(Integer hid) {
         return historyMapper.deleteHistory(hid);
+    }
+
+    @Override
+    public int deleteHistoryBatch(String hidList) {
+
+        ArrayList<Integer> hidArray = new ArrayList<>();
+
+        // 前端开头多了个逗号
+        hidList = hidList.replaceFirst(",","");
+        // 切割成数组
+        String[] split = StrUtil.split(hidList, ",");
+        for (String id : split) {
+            hidArray.add(Integer.parseInt(id));
+        }
+        return historyMapper.deleteHistoryBatch(hidArray);
     }
 
     @Override

@@ -31,6 +31,7 @@ public interface HistoryService {
 
 
     int deleteHistory(Integer hid);
+    int deleteHistoryBatch(String hidList);
     History getHistoryById(Integer hid);
     boolean isHaveHistoryByWid(Integer wid);
     boolean isHaveHistoryByCid(Integer cid);

@@ -150,7 +150,7 @@ public class HistoryController {
      * @return
      */
     @RequestMapping("/deleteHistory/{hid}")
-    public String deleteCustomer(@PathVariable("hid")Integer hid,Model model){
+    public String deleteHistory(@PathVariable("hid")Integer hid,Model model){
         int i = historyService.deleteHistory(hid);
         if(i>0){
             model.addAttribute("successMassage","删除成功");
@@ -158,6 +158,23 @@ public class HistoryController {
             model.addAttribute("warningMassage","删除失败");
         }
         return "forward:/history/historyListPage";
+    }
+
+    /**
+     * 批量删除历史信息
+     * @param hidList
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/deleteHistoryBatch",method = RequestMethod.POST)
+    public String deleteHistoryBatch(@RequestParam("hidList") String hidList,Model model){
+        int i = historyService.deleteHistoryBatch(hidList);
+        if(i>0){
+            model.addAttribute("successMassage","批量删除成功");
+        }else{
+            model.addAttribute("warningMassage","批量删除失败");
+        }
+        return "deleteSuccess";
     }
 
     /**

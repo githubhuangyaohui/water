@@ -2,8 +2,10 @@ package com.whut.water.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,6 +58,15 @@ public class DruidConfig {
         return servlet;
     }
 
+    @Bean
+    public FilterRegistrationBean creatFilterRegistrationBean(){
 
-
+        // 过滤器容器
+        //
+        FilterRegistrationBean<WebStatFilter> filterRegistrationBean=
+                new FilterRegistrationBean<>(new WebStatFilter());
+        filterRegistrationBean.addUrlPatterns("/**");
+        filterRegistrationBean.addInitParameter("exclusions","*.js,*.css,*.png,/druid/*");
+        return filterRegistrationBean;
+    }
 }

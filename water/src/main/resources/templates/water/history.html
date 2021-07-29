@@ -7,6 +7,7 @@
     <div th:replace="component::link"></div>
 
     <script th:inline="javascript">
+        <!--获取新增修改的下拉框信息-->
         $(document).ready(function () {
             $.ajax({
                 url: "/history/getCustomerList",
@@ -53,6 +54,7 @@
             })
         })
 
+        // 更新函数
         function update(history) {
             console.log(history)
             document.getElementById("hid").value = history.hid;
@@ -77,6 +79,60 @@
             d = d < 10 ? ('0' + d) : d;
             return y + '-' + m + '-' + d;
         }
+
+
+        // 批量删除
+        $(function () {
+            // 全选
+            $("#selectAll").click(function () {
+                // 选中所以复选框
+                $("input[name=deleteCheckbox]").prop("checked",$(this).prop("checked"))
+            })
+
+            //批量删除事件
+            $("#deleteHistoryList").click(function () {
+                // 获取勾选hid列表
+                let deleteList = $("input[name=deleteCheckbox]:checked");
+                // 判断有无选择，没有弹出提示
+                if(deleteList.length==0){
+                    toastr.warning('至少选择一项');
+                    return;
+                }else{
+                    $('#deleteModal').modal({
+                        show: true
+                    })
+                }
+            })
+        })
+        function postDelete() {
+            // 获取勾选hid列表
+            let deleteList = $("input[name=deleteCheckbox]:checked");
+            // 拼接hid
+            let hidList="";
+            $(deleteList).each(function () {
+                let hid=$(this).val()
+                hidList+=","+hid;
+            });
+            // 发送请求
+            $.ajax({
+                url: "/history/deleteHistoryBatch",
+                data: {
+                    "hidList": hidList
+                },
+                method: "post",
+                success: function (data) {
+                    if(data=="deleteSuccess"){
+                        toastr.success('删除成功')
+                        location.href = '/history/historyListPage'
+                    }else{
+                        toastr.warning('删除失败');
+                    }
+                },
+                error: function (data) {
+                    toastr.warning('删除失败');
+                }
+            })
+        }
     </script>
 </head>
 <body>
@@ -93,6 +149,9 @@
             <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
                 添加历史记录
             </button>
+            <button class="btn btn-danger btn-lg" id="deleteHistoryList">
+                批量删除
+            </button>
         </div>
         <div class="container-fluid">
             <div class="row">
@@ -100,6 +159,10 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
+                            <td>
+                                <input style="width: 20px;height: 20px;" type="checkbox" id="selectAll">
+                                <span>全选/反选</span>
+                            </td>
                             <td>历史编号</td>
                             <td>工人姓名</td>
                             <td>客户姓名</td>
@@ -111,6 +174,9 @@
                         <tbody>
                         <!-- 渲染后客户列表-->
                         <tr th:each="history:${historyList}">
+                            <td>
+                                <input style="width: 20px;height: 20px;" type="checkbox" th:value="${history.hid}" name="deleteCheckbox">
+                            </td>
                             <td th:text="${history.hid}"></td>
                             <td th:text="${history.worker.workerName}"></td>
                             <td th:text="${history.customer.custName}"></td>
@@ -137,6 +203,27 @@
         <div th:replace="component::pageComponent(${pageData},${pageInfo},'/history/historyListPage','/history/searchHistoryPage',${searchName},${searchName2})"></div>
     </div>
 </div>
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">提 示</h4>
+            </div>
+            <div class="modal-body">
+                是否批量删除记录？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <input type="hidden" id="isDeleteBook">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="postDelete()">确认</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 
 
 <!-- 模态框（添加,修改） -->
