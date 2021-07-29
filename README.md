@@ -40,7 +40,38 @@
 ## 项目结构
 
 
-![项目架构图](./mdPic/sys.png))
+![项目架构图](./mdPic/sys.png)
+
+## 界面演示
+
+1. 登录
+![登录](./mdPic/login.png)
+
+2. 主页
+
+![主页](./mdPic/main.png)
+
+3. 客户管理
+![客户](./mdPic/customer.png)
+![客户插入修改](./mdPic/customerIC.png)
+
+4. 员工管理
+![员工](./mdPic/worker.png)
+![员工插入修改](./mdPic/workerIC.png)
+
+5. 送水记录管理
+![记录](./mdPic/history.png)
+![记录插入修改](./mdPic/historyIC.png)
+
+6. 员工工资计算
+![salary](./mdPic/salary.png)
+
+7. 统计送水数量
+
+![count](./mdPic/count.png)
+
+8. 修改密码
+![pwd](./mdPic/pwd.png)
 
 
 
