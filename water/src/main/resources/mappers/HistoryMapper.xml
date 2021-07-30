@@ -29,13 +29,15 @@
     </select>
 
     <select id="listHistory" resultMap="historyMap">
-        SELECT h.`hid`,c.`cid`,c.`cust_name`,w.`wid`, w.`worker_name`,h.`send_water_time`,h.`send_water_count`
+        SELECT h.`hid`,c.`cid`,c.`cust_name`,w.`wid`, w.`worker_name`,
+        h.`send_water_time`,h.`send_water_count`
         FROM history h,worker w,customer c
         WHERE h.`worker_id`=w.`wid` AND h.`cust_id`=c.`cid`
                 ORDER BY send_water_time ASC
     </select>
     <select id="searchHistory" resultMap="historyMap">
-        SELECT h.`hid`,c.`cid`,c.`cust_name`,w.`wid`, w.`worker_name`,h.`send_water_time`,h.`send_water_count`
+        SELECT h.`hid`,c.`cid`,c.`cust_name`,w.`wid`, w.`worker_name`,
+        h.`send_water_time`,h.`send_water_count`
         FROM history h,worker w,customer c
         WHERE h.`worker_id`=w.`wid`
         AND h.`cust_id`= c.`cid`
@@ -81,7 +83,8 @@
     </resultMap>
 
     <select id="getSalary" resultMap="salaryMap">
-        SELECT worker.`wid`,worker.`worker_name`,worker.`worker_salary`,worker.`worker_money`,SUM(IFNULL(history.`send_water_count`,0)) AS send_water_count_sum
+        SELECT worker.`wid`,worker.`worker_name`,worker.`worker_salary`,worker.`worker_money`,
+        SUM(IFNULL(history.`send_water_count`,0)) AS send_water_count_sum
         FROM worker
         LEFT JOIN (
         SELECT *  FROM history WHERE history.`send_water_time`

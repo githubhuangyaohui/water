@@ -56,9 +56,7 @@ public class HistoryServiceImpl implements HistoryService {
     @Transactional(rollbackFor = {Exception.class,Error.class})
     @Override
     public int deleteHistoryBatch(String hidList) {
-
         ArrayList<Integer> hidArray = new ArrayList<>();
-
         // 前端开头多了个逗号
         hidList = hidList.replaceFirst(",","");
         // 切割成数组
