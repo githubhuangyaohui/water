@@ -3,11 +3,27 @@
 <head>
     <title>Login</title>
     <meta charset="utf-8">
-    <link th:href="@{/css/style2.css}" rel='stylesheet' type='text/css'/>
+
+    <link th:href="@{/css/style2.css}" rel='stylesheet' type='text/css'>
 </head>
 <body>
-<!-----start-main---->
+<script>
+    function changeUserInput() {
+        var userNameInput = document.getElementById('userNameInput').value
+        if (userNameInput != null) {
+            var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥\\\\……&*（）——|{}【】‘；：”“'。，、？]")
+            for (var i = 0; i < userNameInput.length; i++) {
+                if (pattern.test(userNameInput.substr(i, 1))) {
 
+                    console.log('您输入了非法字符，请重新输入')
+                    document.getElementById('userNameInput').value = ""
+                    alert("您输入了非法字符，请重新输入")
+                }
+            }
+        }
+    }
+</script>
+<!-----start-main---->
 <div class="main">
     <div class="login-form">
 
@@ -17,12 +33,13 @@
         </div>
         <!--thymeleaf模板引擎url路径必须包含在@{}中-->
         <form th:action="@{/login}" th:method="post">
-            <input type="text" class="text" name="userName" required placeholder="请输入用户名">
+            <input id="userNameInput" onchange="changeUserInput()" type="text" class="text" name="userName" required
+                   placeholder="请输入用户名">
             <input type="password" name="userPwd" required placeholder="请输入密码">
             <div class="submit">
                 <input type="submit" name="submit" value="登录">
             </div>
-            <p style="color: red" th:text="${loginFail}" th:if="${!#strings.isEmpty(loginFail)}"></p>
+            <p id="tip" style="color: red" th:text="${loginFail}" th:if="${!#strings.isEmpty(loginFail)}"></p>
         </form>
         <!--		</div>-->
         <!--		 	<div class="copy-right">-->
